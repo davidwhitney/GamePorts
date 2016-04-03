@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WinBlocks
 {
@@ -10,28 +9,35 @@ namespace WinBlocks
     {
         private readonly ISelectBlocks _selector;
         private List<string> _rows;
-        private Tetrimino _current;
+        public Tetrimino Current { get; set; }
+        public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
 
         public int Height => _rows.Count - 2;
         public int Width => _rows.First().Length;
 
-        public Tetris(ISelectBlocks selector)
+        public Tetris(ISelectBlocks selector, string pattern = "")
         {
             _selector = selector;
-            _rows = new List<string>(Enumerable.Repeat("..........", 22));
+            _rows = pattern == "" ? new List<string>(Enumerable.Repeat("..........", 22)) : RowsFromPattern(pattern);
         }
 
         public override string ToString()
         {
             var snapshot = new List<string>(_rows);
-            
-            if (_current != null)
+
+            var toDraw = new List<Tetrimino>(BoardContents);
+            if (Current != null)
             {
-                var targetRowOffset = _current.Row;
-                foreach (var patternLine in _current.PatternParts)
+                toDraw.Add(Current);
+            }
+
+            foreach (var item in toDraw)
+            {
+                var targetRowOffset = item.Row;
+                foreach (var patternLine in item.PatternParts)
                 {
-                    snapshot[targetRowOffset] = snapshot[targetRowOffset].Insert(_current.Column, patternLine);
-                    snapshot[targetRowOffset] = snapshot[targetRowOffset].Remove(_current.Column + patternLine.Length, patternLine.Length);
+                    snapshot[targetRowOffset] = snapshot[targetRowOffset].Insert(item.Column, patternLine);
+                    snapshot[targetRowOffset] = snapshot[targetRowOffset].Remove(item.Column + patternLine.Length, patternLine.Length);
 
                     targetRowOffset++;
                 }
@@ -46,16 +52,68 @@ namespace WinBlocks
             return buffer.ToString();
         }
 
-        public void Spawn()
-        {
-            _current = _selector.Random();
-            _current.Row = 0;
-            _current.Column = 1;
-        }
-
         public void Step()
         {
-            _current.Row++;
+            if (Current == null)
+            {
+                Current = _selector.Random();
+                Current.Row = 0;
+                Current.Column = 1;
+            }
+
+            if (Current.Row < _rows.Count - 1)
+            {
+                Current.Row++;
+            }
+            else
+            {
+                BoardContents.Push(Current);
+                Current = null;
+            }
+        }
+
+        private List<string> RowsFromPattern(string pattern)
+        {
+            var lines = pattern.Trim().Split(new[] {Environment.NewLine}, StringSplitOptions.None);
+            var ourRows =  new List<string>(lines);
+            var topPad = new string('.', lines.First().Length);
+            ourRows.Insert(0, topPad);
+            ourRows.Insert(0, topPad);
+
+            var leftMost = int.MaxValue;
+            int topMost = 0;
+            var shapeLines = new List<string>();
+            for (int rowIndex = 0; rowIndex < ourRows.Count; rowIndex++)
+            {
+                var row = ourRows[rowIndex];
+                var shapeRow = "";
+                for (int index = 0; index < row.Length; index++)
+                {
+                    var letter = row[index];
+
+                    if (letter != '.')
+                    {
+                        leftMost = index < leftMost ? index : leftMost;
+                        topMost = rowIndex > topMost ? rowIndex : topMost;
+                        shapeRow += letter;
+
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(shapeRow))
+                {
+                    shapeLines.Add(shapeRow);
+                }
+            }
+            if (shapeLines.Any())
+            {
+                Current = new Tetrimino(string.Join(Environment.NewLine, shapeLines))
+                {
+                    Column = leftMost,
+                    Row = topMost
+                };
+            }
+
+            return ourRows;
         }
     }
 
