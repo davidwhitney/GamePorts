@@ -18,13 +18,5 @@ namespace WinBlocks.Tests
 
             Assert.That(valid, Is.Not.Null);
         }
-
-        [Test]
-        public void Ctor_HasEmptyLocationMap()
-        {
-            var valid = new Tetrimino("IIII");
-
-            Assert.That(valid.LocationMap.Count, Is.EqualTo(4));
-        }
     }
 }

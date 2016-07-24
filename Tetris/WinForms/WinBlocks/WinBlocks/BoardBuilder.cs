@@ -45,8 +45,8 @@ namespace WinBlocks
             {
                 current = new Tetrimino(string.Join(Environment.NewLine, shapeLines))
                 {
-                    Column = leftMost,
-                    Row = topMost
+                    X = leftMost,
+                    Y = topMost
                 };
             }
 

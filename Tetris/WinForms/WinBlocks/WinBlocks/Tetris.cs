@@ -46,13 +46,9 @@ namespace WinBlocks
 
             foreach (var item in toDraw)
             {
-                var targetRowOffset = item.Row;
-                foreach (var patternLine in item.PatternParts)
+                foreach (var renderLocation in item.BlockLocations())
                 {
-                    snapshot[targetRowOffset] = snapshot[targetRowOffset].Insert(item.Column, patternLine);
-                    snapshot[targetRowOffset] = snapshot[targetRowOffset].Remove(item.Column + patternLine.Length, patternLine.Length);
-
-                    targetRowOffset++;
+                    snapshot[renderLocation.Y] = snapshot[renderLocation.Y].Replace(renderLocation.X, renderLocation.Content);
                 }
             }
 
@@ -70,21 +66,48 @@ namespace WinBlocks
             if (Current == null)
             {
                 Current = _selector.Random();
-                Current.Row = 0;
-                Current.Column = 1;
+                Current.Y = 0;
+                Current.X = 1;
                 return;
             }
 
-            if (Current.Row >= Rows.Count - 1)
+            if (Current.Y == Rows.Count - 1
+                || !CurrentBlockCanMove())
             {
                 BoardContents.Push(Current);
                 Current = null;
                 return;
             }
 
-            Current.Row++;
+            Current.Y++;
         }
 
-       
+        private bool CurrentBlockCanMove()
+        {
+            foreach (var loc in Current.BlockLocations())
+            {
+                if (CanMoveInto(loc.X, loc.Y + 1))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool CanMoveInto(int x, int y)
+        {
+            if (y >= Rows.Count)
+            {
+                return false;
+            }
+
+            if (x >= Rows[y].Length)
+            {
+                return false;
+            }
+
+            var val = Rows[y][x].ToString();
+            return val != ".";
+        }
     }
 }

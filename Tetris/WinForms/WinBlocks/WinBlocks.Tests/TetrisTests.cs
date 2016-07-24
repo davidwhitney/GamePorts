@@ -116,6 +116,41 @@ A...".TrimStart()));
         }
 
         [Test]
+        public void Step_PiecesColide_CollisionSticks()
+        {
+            _sut = new Tetris(_selector.Object, @"
+....
+.X..");
+            
+            _sut.Step();
+            _sut.Step();
+
+            var render = _sut.ToString().Trim();
+
+            Assert.That(render, Is.EqualTo(@"
+.A..
+.X..".TrimStart()));
+        }
+
+        [Test]
+        public void Step_PiecesColide_CantStepPast()
+        {
+            _sut = new Tetris(_selector.Object, @"
+....
+.X..");
+            
+            _sut.Step();
+            _sut.Step();
+            _sut.Step();
+
+            var render = _sut.ToString().Trim();
+
+            Assert.That(render, Is.EqualTo(@"
+.A..
+.X..".TrimStart()));
+        }
+
+        [Test]
         public void Step_LastBlockSticks_NewBlockIntroduced()
         {
             _selector.Setup(x => x.Random()).Returns(new Tetrimino("A"));
