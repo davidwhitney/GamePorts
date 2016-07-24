@@ -71,8 +71,7 @@ namespace WinBlocks
                 return;
             }
 
-            if (Current.Y == Rows.Count - 1
-                || !CurrentBlockCanMove())
+            if (!CurrentPieceCanMove())
             {
                 BoardContents.Push(Current);
                 Current = null;
@@ -82,16 +81,18 @@ namespace WinBlocks
             Current.Y++;
         }
 
-        private bool CurrentBlockCanMove()
+        private bool CurrentPieceCanMove()
         {
-            foreach (var loc in Current.BlockLocations())
+            var locs = Current.BlockLocations().ToList();
+
+            var lowestElement = locs.Max(l => l.Y);
+            if (lowestElement + 1 >= Rows.Count)
             {
-                if (CanMoveInto(loc.X, loc.Y + 1))
-                {
-                    return false;
-                }
+                return false;
             }
-            return true;
+
+            var allBlocksCanMoveDown = locs.All(loc => CanMoveInto(loc.X, loc.Y + 1));
+            return allBlocksCanMoveDown;
         }
 
         private bool CanMoveInto(int x, int y)
@@ -106,8 +107,7 @@ namespace WinBlocks
                 return false;
             }
 
-            var val = Rows[y][x].ToString();
-            return val != ".";
+            return Rows[y][x].ToString() == ".";
         }
     }
 }
