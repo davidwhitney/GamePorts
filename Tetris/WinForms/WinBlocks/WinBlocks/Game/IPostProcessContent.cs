@@ -1,4 +1,4 @@
-﻿namespace WinBlocks
+﻿namespace WinBlocks.Game
 {
     public interface IPostProcessContent
     {

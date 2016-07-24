@@ -1,4 +1,6 @@
-﻿namespace WinBlocks
+﻿using WinBlocks.Game;
+
+namespace WinBlocks
 {
     public class DisplayPostProcessor : IPostProcessContent
     {

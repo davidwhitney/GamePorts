@@ -52,7 +52,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(806, 714);
             this.textBox1.TabIndex = 1;
-            this.textBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyUp);
+            this.textBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.UiMove);
             // 
             // btnNew
             // 
@@ -85,7 +85,7 @@
             this.Controls.Add(this.btnStep);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.UiMove);
             this.ResumeLayout(false);
             this.PerformLayout();
 

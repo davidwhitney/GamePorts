@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Moq;
 using NUnit.Framework;
+using WinBlocks.Game;
 
 namespace WinBlocks.Tests
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace WinBlocks
+namespace WinBlocks.Game
 {
     public class Tetris
     {
@@ -67,7 +67,7 @@ namespace WinBlocks
                 return;
             }
 
-            if (!CurrentPieceCanMove())
+            if (!Current.BlockLocations().All(loc => CanMoveInto(loc.X, loc.Y + 1)))
             {
                 BoardContents.Push(Current);
                 Current = null;
@@ -75,19 +75,6 @@ namespace WinBlocks
             }
 
             Current.Y++;
-        }
-
-        private bool CurrentPieceCanMove()
-        {
-            var locs = Current.BlockLocations().ToList();
-
-            var lowestElement = locs.Max(l => l.Y);
-            if (lowestElement + 1 >= Rows.Count)
-            {
-                return false;
-            }
-
-            return locs.All(loc => CanMoveInto(loc.X, loc.Y + 1));
         }
 
         private bool CanMoveInto(int x, int y)
@@ -102,25 +89,7 @@ namespace WinBlocks
                 return false;
             }
 
-            if (CollidesWithExistingPiece(x, y))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private bool CollidesWithExistingPiece(int x, int y)
-        {
-            foreach (var piece in BoardContents)
-            {
-                var elements = piece.BlockLocations().ToList();
-                if (elements.Any(el => el.X == x && el.Y == y))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return !OccupiedLocations.Any(el => el.X == x && el.Y == y);
         }
 
         public void Move(Direction direction)
@@ -129,11 +98,9 @@ namespace WinBlocks
             {
                 return;
             }
-
-            var allOccupiedLocations = OccupiedLocations.ToList();
+            
             var target = EstablishTarget(direction);
-
-            if (allOccupiedLocations.Any(l => l.X == target.X && l.Y == target.Y))
+            if (!CanMoveInto(target.X, target.Y))
             {
                 return;
             }
@@ -157,12 +124,5 @@ namespace WinBlocks
             }
             return targetLocation;
         }
-    }
-
-    public enum Direction
-    {
-        Left,
-        Right,
-        Down
     }
 }

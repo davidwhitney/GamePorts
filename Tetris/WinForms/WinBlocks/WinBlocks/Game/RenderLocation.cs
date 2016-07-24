@@ -1,4 +1,4 @@
-namespace WinBlocks
+namespace WinBlocks.Game
 {
     public class RenderLocation : Location
     {
@@ -23,18 +23,7 @@ namespace WinBlocks
 
         protected bool Equals(RenderLocation other)
         {
-            return X == other.X && Y == other.Y && Content == other.Content;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = X.GetHashCode();
-                hashCode = (hashCode*397) ^ Y.GetHashCode();
-                hashCode = (hashCode*397) ^ Content.GetHashCode();
-                return hashCode;
-            }
+            return base.Equals(other) && Content == other.Content;
         }
     }
 }

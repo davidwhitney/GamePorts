@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using WinBlocks.Game;
 
 namespace WinBlocks.Tests
 {

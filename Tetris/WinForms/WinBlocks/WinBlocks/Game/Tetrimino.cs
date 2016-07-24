@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace WinBlocks
+namespace WinBlocks.Game
 {
     public class Tetrimino
     {

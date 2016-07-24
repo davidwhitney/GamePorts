@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace WinBlocks
+namespace WinBlocks.Game
 {
     public class Selector : ISelectBlocks
     {
