@@ -19,7 +19,7 @@ namespace WinBlocks.Tests
             var locs = tet.BlockLocations().ToList();
 
             Assert.That(locs[0], Is.EqualTo(new RenderLocation(0, 0, "I")));
-            Assert.That(locs[1], Is.EqualTo(new RenderLocation(0, 1, "I")));
+            Assert.That(locs[1], Is.EqualTo(new RenderLocation(1, 0, "I")));
         }
 
         [Test]
@@ -34,7 +34,7 @@ namespace WinBlocks.Tests
             var locs = tet.BlockLocations().ToList();
 
             Assert.That(locs[0], Is.EqualTo(new RenderLocation(0, 0, "I")));
-            Assert.That(locs[1], Is.EqualTo(new RenderLocation(0, 2, "I")));
+            Assert.That(locs[1], Is.EqualTo(new RenderLocation(2, 0, "I")));
         }
 
         [Test]
@@ -49,8 +49,8 @@ namespace WinBlocks.Tests
             var locs = tet.BlockLocations().ToList();
 
             Assert.That(locs[0], Is.EqualTo(new RenderLocation(0, 0, "I")));
-            Assert.That(locs[1], Is.EqualTo(new RenderLocation(0, 1, "I")));
-            Assert.That(locs[2], Is.EqualTo(new RenderLocation(1, 0, "I")));
+            Assert.That(locs[1], Is.EqualTo(new RenderLocation(1, 0, "I")));
+            Assert.That(locs[2], Is.EqualTo(new RenderLocation(0, 1, "I")));
             Assert.That(locs[3], Is.EqualTo(new RenderLocation(1, 1, "I")));
         }
     }

@@ -20,13 +20,13 @@ namespace WinBlocks
 
         public IEnumerable<RenderLocation> BlockLocations()
         {
-            for (var xx = 0; xx < PatternParts.Count; xx++)
+            for (var yy = 0; yy < PatternParts.Count; yy++)
             {
-                var row = PatternParts[xx];
+                var row = PatternParts[yy];
 
-                for (var yy = 0; yy < row.Length; yy++)
+                for (var xx = 0; xx < row.Length; xx++)
                 {
-                    var c = row[yy];
+                    var c = row[xx];
 
                     if (c == '.')
                     {
