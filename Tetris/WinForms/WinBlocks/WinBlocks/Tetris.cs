@@ -11,6 +11,7 @@ namespace WinBlocks
         public List<string> Rows { get; set; }
         public Tetrimino Current { get; set; }
         public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
+        public List<IPostProcessContent> PostProcessors = new List<IPostProcessContent>();
 
         public int Height => Rows.Count;
         public int Width => Rows.First().Length;
@@ -26,7 +27,7 @@ namespace WinBlocks
 
         public override string ToString()
         {
-            var snapshot = new List<string>(Rows);
+            var snapshot = new List<string>();
 
             var toDraw = new List<Tetrimino>(BoardContents);
             if (Current != null)
@@ -34,14 +35,24 @@ namespace WinBlocks
                 toDraw.Add(Current);
             }
 
-            foreach (var item in toDraw)
+            var blocks = toDraw.SelectMany(x => x.BlockLocations()).ToList();
+
+            for (var y = 0; y < Height; y++)
             {
-                foreach (var renderLocation in item.BlockLocations())
+                var sbLine = new StringBuilder();
+
+                for (var x = 0; x < Width; x++)
                 {
-                    snapshot[renderLocation.Y] = snapshot[renderLocation.Y].Replace(renderLocation.X, renderLocation.Content);
+                    var inLoc = blocks.SingleOrDefault(l => l.X == x && l.Y == y);
+                    var token = inLoc != null ? inLoc.Content : ".";
+                    token = PostProcessors.Aggregate(token, (current, processors) => processors.Process(current));
+
+                    sbLine.Append(token);
                 }
+
+                snapshot.Add(sbLine.ToString());
             }
-            
+
             return string.Join(Environment.NewLine, snapshot);
         }
 
@@ -110,5 +121,30 @@ namespace WinBlocks
             }
             return false;
         }
+
+        public void Move(Direction direction)
+        {
+            if (Current == null)
+            {
+                return;
+            }
+
+            if (direction == Direction.Right)
+            {
+                Current.X++;
+            }
+
+            if (direction == Direction.Left)
+            {
+                Current.X--;
+            }
+        }
+    }
+
+    public enum Direction
+    {
+        Left,
+        Right,
+        Down
     }
 }

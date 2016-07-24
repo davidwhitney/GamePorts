@@ -46,11 +46,13 @@
             // 
             // textBox1
             // 
+            this.textBox1.Font = new System.Drawing.Font("Wingdings 2", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.textBox1.Location = new System.Drawing.Point(13, 75);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(806, 714);
             this.textBox1.TabIndex = 1;
+            this.textBox1.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBox1_KeyUp);
             // 
             // btnNew
             // 
@@ -83,6 +85,7 @@
             this.Controls.Add(this.btnStep);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             this.ResumeLayout(false);
             this.PerformLayout();
 

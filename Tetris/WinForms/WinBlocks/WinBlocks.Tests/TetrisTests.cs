@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using System.Linq;
+using Moq;
 using NUnit.Framework;
 
 namespace WinBlocks.Tests
@@ -50,6 +51,24 @@ namespace WinBlocks.Tests
 ....
 ....
 ....".TrimStart()));
+        }
+
+        [TestCase(Direction.Right, "..A.")]
+        [TestCase(Direction.Left, "A...")]
+        public void Move_GivenDirection_MovesPiece(Direction dir, string match)
+        {
+            _sut = NewGame(@"
+....
+....
+....
+....");
+
+            _sut.Step(); // spawn
+            _sut.Move(dir);
+
+            var render = _sut.ToString().Trim();
+
+            Assert.That(render.Take(4), Is.EqualTo(match));
         }
 
         [Test]
