@@ -1,4 +1,4 @@
-namespace WinBlocks.Game
+namespace WinBlocks.Game.Rendering
 {
     public class Location
     {

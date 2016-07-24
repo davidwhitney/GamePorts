@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using WinBlocks.Game.BlockSelection;
+using WinBlocks.Game.Input;
+using WinBlocks.Game.Model;
+using WinBlocks.Game.Rendering;
 
 namespace WinBlocks.Game
 {

@@ -1,4 +1,7 @@
 using WinBlocks.Game;
+using WinBlocks.Game.BlockSelection;
+using WinBlocks.Game.Model;
+using WinBlocks.Game.Rendering;
 
 namespace WinBlocks
 {

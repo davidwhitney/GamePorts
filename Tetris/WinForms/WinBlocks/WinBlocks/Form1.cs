@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using WinBlocks.Game;
+using WinBlocks.Game.Input;
 using Timer = System.Windows.Forms.Timer;
 
 namespace WinBlocks

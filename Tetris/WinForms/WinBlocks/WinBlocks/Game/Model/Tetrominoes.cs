@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WinBlocks.Game
+namespace WinBlocks.Game.Model
 {
     public class Tetrominoes : List<Tetrimino>
     {

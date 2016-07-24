@@ -50,11 +50,10 @@
   <ItemGroup>
     <Compile Include="BoardBuilderForTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SelectorTests.cs" />
-    <Compile Include="StringExtensionsTests.cs" />
-    <Compile Include="TetriminoTests.cs" />
-    <Compile Include="TetrisTests.cs" />
-    <Compile Include="TetrominoesTests.cs" />
+    <Compile Include="Game\BlockSelection\SelectorTests.cs" />
+    <Compile Include="Game\Model\TetriminoTests.cs" />
+    <Compile Include="Game\TetrisTests.cs" />
+    <Compile Include="Game\Model\TetrominoesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

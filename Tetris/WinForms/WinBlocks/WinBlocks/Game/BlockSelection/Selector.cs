@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using WinBlocks.Game.Model;
 
-namespace WinBlocks.Game
+namespace WinBlocks.Game.BlockSelection
 {
     public class Selector : ISelectBlocks
     {

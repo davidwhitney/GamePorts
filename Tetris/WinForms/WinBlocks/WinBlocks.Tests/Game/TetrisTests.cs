@@ -2,8 +2,11 @@
 using Moq;
 using NUnit.Framework;
 using WinBlocks.Game;
+using WinBlocks.Game.BlockSelection;
+using WinBlocks.Game.Input;
+using WinBlocks.Game.Model;
 
-namespace WinBlocks.Tests
+namespace WinBlocks.Tests.Game
 {
     [TestFixture]
     public class TetrisTests

@@ -1,8 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
-using WinBlocks.Game;
+using WinBlocks.Game.Model;
 
-namespace WinBlocks.Tests
+namespace WinBlocks.Tests.Game.Model
 {
     public class TetrominoesTests
     {

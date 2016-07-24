@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WinBlocks.Game;
+using WinBlocks.Game.Model;
 
 namespace WinBlocks.Tests
 {

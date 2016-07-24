@@ -1,4 +1,4 @@
-﻿namespace WinBlocks.Game
+﻿namespace WinBlocks.Game.Input
 {
     public enum Direction
     {

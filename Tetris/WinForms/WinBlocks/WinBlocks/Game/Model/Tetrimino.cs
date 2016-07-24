@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using WinBlocks.Game.Rendering;
 
-namespace WinBlocks.Game
+namespace WinBlocks.Game.Model
 {
     public class Tetrimino
     {

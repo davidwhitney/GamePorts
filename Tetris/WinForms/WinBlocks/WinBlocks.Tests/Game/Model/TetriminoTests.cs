@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
-using WinBlocks.Game;
+using WinBlocks.Game.Model;
+using WinBlocks.Game.Rendering;
 
-namespace WinBlocks.Tests
+namespace WinBlocks.Tests.Game.Model
 {
     [TestFixture]
     public class TetriminoTests

@@ -1,7 +1,8 @@
 using NUnit.Framework;
-using WinBlocks.Game;
+using WinBlocks.Game.BlockSelection;
+using WinBlocks.Game.Model;
 
-namespace WinBlocks.Tests
+namespace WinBlocks.Tests.Game.BlockSelection
 {
     public class SelectorTests
     {
