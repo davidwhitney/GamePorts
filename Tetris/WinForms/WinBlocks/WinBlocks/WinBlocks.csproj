@@ -55,6 +55,7 @@
     </Compile>
     <Compile Include="IPostProcessContent.cs" />
     <Compile Include="ISelectBlocks.cs" />
+    <Compile Include="Location.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderLocation.cs" />

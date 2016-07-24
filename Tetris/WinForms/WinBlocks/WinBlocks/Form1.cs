@@ -51,6 +51,11 @@ namespace WinBlocks
         private void Step()
         {
             _game.Step();
+            Draw();
+        }
+
+        private void Draw()
+        {
             textBox1.Clear();
             textBox1.Text = _game.ToString();
         }
@@ -65,6 +70,7 @@ namespace WinBlocks
             {
                 _game.Move(Direction.Left);
             }
+            Draw();
         }
     }
 }

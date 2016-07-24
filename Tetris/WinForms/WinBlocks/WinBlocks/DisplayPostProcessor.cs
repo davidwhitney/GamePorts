@@ -6,10 +6,10 @@
         {
             if (input == ".")
             {
-                return "  ";
+                return "░";
             }
 
-            return "¢";
+            return "◙";
         }
     }
 }

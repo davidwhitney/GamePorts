@@ -156,6 +156,28 @@ A...".TrimStart()));
         }
 
         [Test]
+        public void Move_AttemptToMoveOntoAnotherBlock_WontMove()
+        {
+            _sut = NewGame(@"
+....
+....
+....
+....");
+            _sut.BoardContents.Push(new Tetrimino("A\r\nA") { X = 1, Y = 2 });
+            _sut.Current = new Tetrimino("A\r\nA") {X = 0, Y = 2};
+
+            _sut.Move(Direction.Right);
+
+            var render = _sut.ToString().Trim();
+
+            Assert.That(render, Is.EqualTo(@"
+....
+....
+AA..
+AA..".TrimStart()));
+        }
+
+        [Test]
         public void Step_PiecesColide_CollisionSticks()
         {
             _sut = NewGame(@"

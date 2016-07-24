@@ -11,6 +11,7 @@ namespace WinBlocks
         public List<string> Rows { get; set; }
         public Tetrimino Current { get; set; }
         public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
+        public IEnumerable<RenderLocation> OccupiedLocations => BoardContents.SelectMany(x => x.BlockLocations());
         public List<IPostProcessContent> PostProcessors = new List<IPostProcessContent>();
 
         public int Height => Rows.Count;
@@ -129,15 +130,32 @@ namespace WinBlocks
                 return;
             }
 
+            var allOccupiedLocations = OccupiedLocations.ToList();
+            var target = EstablishTarget(direction);
+
+            if (allOccupiedLocations.Any(l => l.X == target.X && l.Y == target.Y))
+            {
+                return;
+            }
+
+            Current.X = target.X;
+            Current.Y = target.Y;
+        }
+
+        private Location EstablishTarget(Direction direction)
+        {
+            var targetLocation = new Location {X = Current.X, Y = Current.Y};
+
             if (direction == Direction.Right)
             {
-                Current.X++;
+                targetLocation.X++;
             }
 
             if (direction == Direction.Left)
             {
-                Current.X--;
+                targetLocation.X--;
             }
+            return targetLocation;
         }
     }
 

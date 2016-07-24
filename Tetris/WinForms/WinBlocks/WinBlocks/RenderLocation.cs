@@ -1,9 +1,8 @@
 namespace WinBlocks
 {
-    public class RenderLocation
+    public class RenderLocation : Location
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+
         public string Content { get; set; }
 
         public RenderLocation(int x, int y, string content = ".")
