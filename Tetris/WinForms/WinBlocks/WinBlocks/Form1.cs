@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace WinBlocks
 {
@@ -29,6 +23,18 @@ namespace WinBlocks
         }
 
         private void btnStep_Click(object sender, EventArgs e)
+        {
+            Step();
+        }
+
+        private void btnPlay_Click(object sender, EventArgs e)
+        {
+            var timer = new Timer {Interval = 800};
+            timer.Tick += (sender1, e1) => { Step(); };
+            timer.Start();
+        }
+
+        private void Step()
         {
             _game.Step();
             textBox1.Clear();

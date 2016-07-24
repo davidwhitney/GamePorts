@@ -31,6 +31,7 @@
             this.btnStep = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnNew = new System.Windows.Forms.Button();
+            this.btnPlay = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStep
@@ -61,11 +62,22 @@
             this.btnNew.UseVisualStyleBackColor = true;
             this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
+            // btnPlay
+            // 
+            this.btnPlay.Location = new System.Drawing.Point(325, 13);
+            this.btnPlay.Name = "btnPlay";
+            this.btnPlay.Size = new System.Drawing.Size(150, 56);
+            this.btnPlay.TabIndex = 3;
+            this.btnPlay.Text = "Play";
+            this.btnPlay.UseVisualStyleBackColor = true;
+            this.btnPlay.Click += new System.EventHandler(this.btnPlay_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(831, 903);
+            this.Controls.Add(this.btnPlay);
             this.Controls.Add(this.btnNew);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.btnStep);
@@ -81,6 +93,7 @@
         private System.Windows.Forms.Button btnStep;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnNew;
+        private System.Windows.Forms.Button btnPlay;
     }
 }
 
