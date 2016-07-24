@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 
 namespace WinBlocks.Tests
@@ -22,7 +21,7 @@ namespace WinBlocks.Tests
         public void Ctor_ProvidesEmptyBoard()
         {
             Assert.That(_sut.Width, Is.EqualTo(10));
-            Assert.That(_sut.Height, Is.EqualTo(20));
+            Assert.That(_sut.Height, Is.EqualTo(22));
         }
 
         [Test]
@@ -32,15 +31,7 @@ namespace WinBlocks.Tests
 
             Assert.That(board.Trim(), Is.EqualTo(DefaultEmptyBoard));
         }
-
-        [Test]
-        public void Spawn_AddsRandomlySelectedBlockToBoard_ButOffScreen()
-        {
-            _sut.Step();
-
-            Assert.That(_sut.ToString().Trim(), Is.EqualTo(DefaultEmptyBoard));
-        }
-
+        
         [Test]
         public void SpawnAndStepTwice_AddsRandomlySelectedBlockToBoard_PieceMovesIntoView()
         {
@@ -50,7 +41,7 @@ namespace WinBlocks.Tests
 ....
 ....");
 
-            StepOutOfHiddenZone();
+            _sut.Step();
 
             var render = _sut.ToString().Trim();
 
@@ -71,7 +62,7 @@ namespace WinBlocks.Tests
 ....
 ....");
 
-            StepOutOfHiddenZone();
+            _sut.Step();
 
             var render = _sut.ToString().Trim();
 
@@ -92,7 +83,7 @@ namespace WinBlocks.Tests
 ..........");
 
             _sut.Step();
-            StepOutOfHiddenZone();
+            _sut.Step();
 
             var render = _sut.ToString().Trim();
 
@@ -134,8 +125,8 @@ A...".TrimStart()));
 ....
 A...");
             
+            _sut.Step(); // Because we're loading from pattern, this step will clear the current block variable
             _sut.Step();
-            StepOutOfHiddenZone();
 
             var render = _sut.ToString().Trim();
 
@@ -144,12 +135,6 @@ A...");
 ....
 ....
 A...".TrimStart()));
-        }
-
-        private void StepOutOfHiddenZone()
-        {
-            _sut.Step();
-            _sut.Step();
         }
 
         private static string DefaultEmptyBoard => @"
@@ -172,46 +157,9 @@ A...".TrimStart()));
 ..........
 ..........
 ..........
+..........
+..........
 ..........".TrimStart();
 
-    }
-
-    public class TetrominoesTests
-    {
-        [TestCase("I")]
-        [TestCase("O")]
-        [TestCase("T")]
-        [TestCase("S")]
-        [TestCase("Z")]
-        [TestCase("J")]
-        [TestCase("L")]
-        public void ContainsAllKeys(string key)
-        {
-            var valid = new Tetrominoes().Single(x => x.Id == key);
-
-            Assert.That(valid, Is.Not.Null);
-        }
-    }
-
-    public class SelectorTests
-    {
-        private Tetrominoes _tets;
-        private Selector _sel;
-
-        [SetUp]
-        public void Setup()
-        {
-            _tets = new Tetrominoes();
-            _sel = new Selector(_tets);
-        }
-
-        [Test]
-        public void Random_SelectsRandomBlock()
-        {
-            var block = _sel.Random();
-
-            Assert.That(block, Is.Not.Null);
-            Assert.That(_tets, Does.Contain(block));
-        }
     }
 }
