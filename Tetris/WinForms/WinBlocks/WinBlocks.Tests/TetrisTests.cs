@@ -35,7 +35,7 @@ namespace WinBlocks.Tests
         [Test]
         public void SpawnAndStepTwice_AddsRandomlySelectedBlockToBoard_PieceMovesIntoView()
         {
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 ....
 ....
@@ -56,7 +56,7 @@ namespace WinBlocks.Tests
         public void SpawnAndStep_PieceIsTwoRowsBig_DrawsBoth()
         {
             _selector.Setup(x => x.Random()).Returns(new Tetrimino("AA\r\nAA"));
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 ....
 ....
@@ -76,7 +76,7 @@ namespace WinBlocks.Tests
         [Test]
         public void SpawnAndStepAndStepPieceMovesDownBoard()
         {
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ..........
 ..........
 ..........
@@ -97,7 +97,7 @@ namespace WinBlocks.Tests
         [Test]
         public void Step_CurrentCannotMove_Sticks()
         {
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 ....
 ....
@@ -117,14 +117,12 @@ A...".TrimStart()));
         [Test]
         public void Step_CurrentCannotMoveAndIsMoreThanOneLineBig_Sticks()
         {
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 ....
 ....
-....")
-            {
-                Current = new Tetrimino("A\r\nA") {X = 0, Y = 2}
-            };
+....");
+            _sut.Current = new Tetrimino("A\r\nA") {X = 0, Y = 2};
 
 
             _sut.Step();
@@ -141,7 +139,7 @@ A...".TrimStart()));
         [Test]
         public void Step_PiecesColide_CollisionSticks()
         {
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 .X..");
             
@@ -158,7 +156,7 @@ A...".TrimStart()));
         [Test]
         public void Step_PiecesColide_CantStepPast()
         {
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 .X..");
             
@@ -177,7 +175,7 @@ A...".TrimStart()));
         public void Step_LastBlockSticks_NewBlockIntroduced()
         {
             _selector.Setup(x => x.Random()).Returns(new Tetrimino("A"));
-            _sut = new Tetris(_selector.Object, @"
+            _sut = NewGame(@"
 ....
 ....
 ....
@@ -193,6 +191,16 @@ A...");
 ....
 ....
 A...".TrimStart()));
+        }
+
+        private Tetris NewGame(string map)
+        {
+            var state = new BoardBuilderForTests().Populate(map);
+            return new Tetris(_selector.Object)
+            {
+                Rows = state.Item1,
+                Current = state.Item2
+            };
         }
     }
 }

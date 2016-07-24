@@ -18,20 +18,10 @@ namespace WinBlocks
         public static string EmptyBoard => string.Join(Environment.NewLine, BoardRows);
         private static List<string> BoardRows => new List<string>(Enumerable.Repeat("..........", 22));
 
-        public Tetris(ISelectBlocks selector, string pattern = "")
+        public Tetris(ISelectBlocks selector)
         {
             _selector = selector;
-
-            if (pattern == "")
-            {
-                Rows = BoardRows;
-            }
-            else
-            {
-                var state = new BoardBuilder().Populate(pattern);
-                Rows = state.Item1;
-                Current = state.Item2;
-            }
+            Rows = BoardRows;
         }
 
         public override string ToString()
@@ -51,14 +41,8 @@ namespace WinBlocks
                     snapshot[renderLocation.Y] = snapshot[renderLocation.Y].Replace(renderLocation.X, renderLocation.Content);
                 }
             }
-
-            var buffer = new StringBuilder();
-            foreach (var row in snapshot)
-            {
-                buffer.AppendLine(row);
-            }
-
-            return buffer.ToString();
+            
+            return string.Join(Environment.NewLine, snapshot);
         }
 
         public void Step()
@@ -91,8 +75,7 @@ namespace WinBlocks
                 return false;
             }
 
-            var allBlocksCanMoveDown = locs.All(loc => CanMoveInto(loc.X, loc.Y + 1));
-            return allBlocksCanMoveDown;
+            return locs.All(loc => CanMoveInto(loc.X, loc.Y + 1));
         }
 
         private bool CanMoveInto(int x, int y)
@@ -107,7 +90,25 @@ namespace WinBlocks
                 return false;
             }
 
-            return Rows[y][x].ToString() == ".";
+            if (CollidesWithExistingPiece(x, y))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool CollidesWithExistingPiece(int x, int y)
+        {
+            foreach (var piece in BoardContents)
+            {
+                var elements = piece.BlockLocations().ToList();
+                if (elements.Any(el => el.X == x && el.Y == y))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
