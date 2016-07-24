@@ -11,7 +11,6 @@ namespace WinBlocks.Game
 {
     public class Tetris
     {
-        private readonly ISelectBlocks _selector;
         public List<string> Rows { get; set; }
         public Tetrimino Current { get; set; }
         public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
@@ -20,6 +19,8 @@ namespace WinBlocks.Game
 
         public int Height => Rows.Count;
         public int Width => Rows.First().Length;
+
+        private readonly ISelectBlocks _selector;
 
         public static string EmptyBoard => string.Join(Environment.NewLine, BoardRows);
         private static List<string> BoardRows => new List<string>(Enumerable.Repeat("..........", 22));
@@ -78,22 +79,7 @@ namespace WinBlocks.Game
                 return;
             }
 
-            Current.Y++;
-        }
-
-        private bool CanMoveInto(int x, int y)
-        {
-            if (y >= Rows.Count)
-            {
-                return false;
-            }
-
-            if (x >= Rows[y].Length)
-            {
-                return false;
-            }
-
-            return !OccupiedLocations.Any(el => el.X == x && el.Y == y);
+            Move(Direction.Down);
         }
 
         public void Move(Direction direction)
@@ -113,6 +99,21 @@ namespace WinBlocks.Game
             Current.Y = target.Y;
         }
 
+        private bool CanMoveInto(int x, int y)
+        {
+            if (y >= Rows.Count)
+            {
+                return false;
+            }
+
+            if (x >= Rows[y].Length)
+            {
+                return false;
+            }
+
+            return !OccupiedLocations.Any(el => el.X == x && el.Y == y);
+        }
+
         private Location EstablishTarget(Direction direction)
         {
             var targetLocation = new Location {X = Current.X, Y = Current.Y};
@@ -126,7 +127,18 @@ namespace WinBlocks.Game
             {
                 targetLocation.X--;
             }
+
+            if (direction == Direction.Down)
+            {
+                targetLocation.Y++;
+            }
+
             return targetLocation;
         }
+    }
+
+    public class Mover
+    {
+        
     }
 }

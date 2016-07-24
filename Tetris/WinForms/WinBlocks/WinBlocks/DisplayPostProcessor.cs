@@ -9,7 +9,7 @@ namespace WinBlocks
         {
             if (input == ".")
             {
-                return "░";
+                return "□";
             }
 
             return "◙";
