@@ -87,5 +87,11 @@ namespace WinBlocks.Game.Model
                 Y = Y
             };
         }
+
+        public void Rotate(Direction direction)
+        {
+            var next = PreviewRotation(direction);
+            Pattern = next.Pattern;
+        }
     }
 }
