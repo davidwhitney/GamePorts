@@ -28,18 +28,25 @@ namespace WinBlocks
 
         private void UiMove(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.Right)
+            switch (e.KeyData)
             {
-                _game.Move(Direction.Right);
+                case Keys.Right:
+                    _game.Move(Direction.Right);
+                    break;
+                case Keys.Left:
+                    _game.Move(Direction.Left);
+                    break;
+                case Keys.Down:
+                    _game.Move(Direction.Down);
+                    break;
+                case Keys.Z:
+                    _game.Rotate(Direction.Left);
+                    break;
+                case Keys.X:
+                    _game.Rotate(Direction.Right);
+                    break;
             }
-            if (e.KeyData == Keys.Left)
-            {
-                _game.Move(Direction.Left);
-            }
-            if (e.KeyData == Keys.Down)
-            {
-                _game.Move(Direction.Down);
-            }
+
             Draw();
         }
 

@@ -99,6 +99,11 @@ namespace WinBlocks.Game
             Current.Y = target.Y;
         }
 
+        public void Rotate(Direction direction)
+        {
+            Current?.Rotate(direction);
+        }
+
         private bool CanMoveInto(int x, int y)
         {
             if (y >= Rows.Count)
