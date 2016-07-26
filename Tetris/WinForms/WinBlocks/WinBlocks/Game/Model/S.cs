@@ -8,6 +8,17 @@ namespace WinBlocks.Game.Model
                           "SS." + Environment.NewLine +
                           "...")
         {
+            RotationStates.Add(".S." + Environment.NewLine +
+                               ".SS" + Environment.NewLine +
+                               "..S");
+
+            RotationStates.Add("..." + Environment.NewLine +
+                               ".SS" + Environment.NewLine +
+                               "SS.");
+
+            RotationStates.Add("S.." + Environment.NewLine +
+                               "SS." + Environment.NewLine +
+                               ".S.");
         }
     }
 }
