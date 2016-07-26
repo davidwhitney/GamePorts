@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using NUnit.Framework;
+using WinBlocks.Game.Input;
 using WinBlocks.Game.Model;
 using WinBlocks.Game.Rendering;
 
@@ -54,6 +55,21 @@ namespace WinBlocks.Tests.Game.Model
             Assert.That(locs[1], Is.EqualTo(new RenderLocation(1, 0, "I")));
             Assert.That(locs[2], Is.EqualTo(new RenderLocation(0, 1, "I")));
             Assert.That(locs[3], Is.EqualTo(new RenderLocation(1, 1, "I")));
+        }
+
+        [Test]
+        public void PreviewRotation_GivenDirection_ReturnsRotatedState()
+        {
+            var tet = new Tetrimino("II\r\nI.")
+            {
+                Y = 0,
+                X = 0
+            };
+            tet.RotationStates.Add("II\r\n.I");
+
+            var nextState = tet.PreviewRotation(Direction.Right);
+
+            Assert.That(nextState.Pattern, Is.EqualTo("II\r\n.I"));
         }
     }
 }
