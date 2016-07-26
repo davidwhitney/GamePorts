@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace WinBlocks.Game.Model
 {
@@ -8,26 +7,13 @@ namespace WinBlocks.Game.Model
 
         public Tetrominoes()
         {
-
-            Add(new Tetrimino("IIII"));
-
-            Add(new Tetrimino("OO" + Environment.NewLine +
-                              "OO"));
-
-            Add(new Tetrimino(".T." + Environment.NewLine +
-                              "TTT"));
-
-            Add(new Tetrimino(".SS" + Environment.NewLine +
-                              "SS."));
-
-            Add(new Tetrimino("ZZ." + Environment.NewLine +
-                              ".ZZ"));
-
-            Add(new Tetrimino("J.." + Environment.NewLine +
-                              "JJJ"));
-
-            Add(new Tetrimino("..L" + Environment.NewLine +
-                              "LLL"));
+            Add(new I());
+            Add(new O());
+            Add(new T());
+            Add(new S());
+            Add(new Z());
+            Add(new J());
+            Add(new L());
         }
     }
 }

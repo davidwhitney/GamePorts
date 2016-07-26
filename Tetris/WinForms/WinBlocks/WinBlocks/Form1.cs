@@ -36,6 +36,10 @@ namespace WinBlocks
             {
                 _game.Move(Direction.Left);
             }
+            if (e.KeyData == Keys.Down)
+            {
+                _game.Move(Direction.Down);
+            }
             Draw();
         }
 

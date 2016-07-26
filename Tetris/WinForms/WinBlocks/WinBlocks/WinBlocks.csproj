@@ -55,6 +55,13 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Game\Model\I.cs" />
+    <Compile Include="Game\Model\J.cs" />
+    <Compile Include="Game\Model\L.cs" />
+    <Compile Include="Game\Model\O.cs" />
+    <Compile Include="Game\Model\S.cs" />
+    <Compile Include="Game\Model\T.cs" />
+    <Compile Include="Game\Model\Z.cs" />
     <Compile Include="Game\Rendering\IPostProcessContent.cs" />
     <Compile Include="Game\BlockSelection\ISelectBlocks.cs" />
     <Compile Include="Game\Rendering\Location.cs" />
