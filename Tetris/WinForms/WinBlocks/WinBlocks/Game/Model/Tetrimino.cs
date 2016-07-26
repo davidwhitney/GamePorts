@@ -10,7 +10,8 @@ namespace WinBlocks.Game.Model
     {
         public string Id { get; }
         public string Pattern { get; private set; }
-
+        private List<string> PatternParts => Pattern.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+        
         public int Y { get; set; }
         public int X { get; set; }
 
@@ -27,8 +28,7 @@ namespace WinBlocks.Game.Model
 
         public IEnumerable<RenderLocation> BlockLocations()
         {
-            var patternParts = Pattern.Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
-
+            var patternParts = PatternParts; // Snapshot
             for (var y = 0; y < patternParts.Count; y++)
             {
                 var row = patternParts[y];
@@ -53,8 +53,7 @@ namespace WinBlocks.Game.Model
 
         public void Rotate(Direction direction)
         {
-            var next = PreviewRotation(direction);
-            Pattern = next.Pattern;
+            Pattern = PreviewRotation(direction).Pattern;
         }
 
         public Tetrimino PreviewRotation(Direction direction)
