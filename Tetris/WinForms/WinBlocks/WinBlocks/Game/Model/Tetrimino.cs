@@ -14,7 +14,7 @@ namespace WinBlocks.Game.Model
         public int Y { get; set; }
         public int X { get; set; }
 
-        public List<string> RotationStates { get; }
+        public List<string> RotationStates { get; set; }
         private int _currentState;
 
         public Tetrimino(string pattern)
