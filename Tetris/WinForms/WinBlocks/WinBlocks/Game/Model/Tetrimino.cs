@@ -18,11 +18,17 @@ namespace WinBlocks.Game.Model
         public List<string> RotationStates { get; set; }
         private int _currentState;
 
-        public Tetrimino(string pattern)
+        public Tetrimino(string pattern, string[] rotationStates = null)
         {
             Pattern = pattern;
             Id = Pattern.First(c => c != '.' && c != '\r' && c != '\n').ToString();
             RotationStates = new List<string> {Pattern};
+
+            if (rotationStates != null)
+            {
+                RotationStates.AddRange(rotationStates);
+            }
+
             _currentState = 0;
         }
 
