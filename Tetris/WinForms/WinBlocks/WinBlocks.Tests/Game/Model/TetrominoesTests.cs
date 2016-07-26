@@ -15,7 +15,9 @@ namespace WinBlocks.Tests.Game.Model
         [TestCase("L")]
         public void ContainsAllKeys(string key)
         {
-            var valid = new Tetrominoes().Single(x => x.Id == key);
+            var all = new Tetrominoes();
+
+            var valid = all.Single(x => x.Id == key);
 
             Assert.That(valid, Is.Not.Null);
         }

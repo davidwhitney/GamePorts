@@ -4,8 +4,8 @@ namespace WinBlocks.Game.Model
 {
     public class I : Tetrimino
     {
-        public I() : base("IIII" + Environment.NewLine +
-                          "...." + Environment.NewLine +
+        public I() : base("...." + Environment.NewLine +
+                          "IIII" + Environment.NewLine +
                           "...." + Environment.NewLine +
                           "....")
         {
