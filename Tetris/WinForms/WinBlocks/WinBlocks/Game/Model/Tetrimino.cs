@@ -8,8 +8,9 @@ namespace WinBlocks.Game.Model
 {
     public class Tetrimino
     {
-        public string Id => Pattern.First(c => c != '.' && c != '\r' && c != '\n').ToString();
-        public string Pattern { get; set; }
+        public string Id { get; }
+        public string Pattern { get; private set; }
+
         public int Y { get; set; }
         public int X { get; set; }
 
@@ -19,22 +20,22 @@ namespace WinBlocks.Game.Model
         public Tetrimino(string pattern)
         {
             Pattern = pattern;
+            Id = Pattern.First(c => c != '.' && c != '\r' && c != '\n').ToString();
             RotationStates = new List<string> {Pattern};
             _currentState = 0;
         }
 
-        public List<string> PatternParts => Pattern.Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
-
         public IEnumerable<RenderLocation> BlockLocations()
         {
-            for (var yy = 0; yy < PatternParts.Count; yy++)
+            var patternParts = Pattern.Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
+
+            for (var y = 0; y < patternParts.Count; y++)
             {
-                var row = PatternParts[yy];
+                var row = patternParts[y];
 
-                for (var xx = 0; xx < row.Length; xx++)
+                for (var x = 0; x < row.Length; x++)
                 {
-                    var c = row[xx];
-
+                    var c = row[x];
                     if (c == '.')
                     {
                         continue;
@@ -43,32 +44,17 @@ namespace WinBlocks.Game.Model
                     yield return new RenderLocation
                     {
                         Content = c.ToString(),
-                        X = X + xx,
-                        Y = Y + yy
+                        X = X + x,
+                        Y = Y + y
                     };
                 }
             }
         }
 
-        public override bool Equals(object obj)
+        public void Rotate(Direction direction)
         {
-            return Equals(obj as Tetrimino);
-        }
-
-        protected bool Equals(Tetrimino other)
-        {
-            return string.Equals(Pattern, other.Pattern) && Y == other.Y && X == other.X;
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                var hashCode = Pattern?.GetHashCode() ?? 0;
-                hashCode = (hashCode*397) ^ Y;
-                hashCode = (hashCode*397) ^ X;
-                return hashCode;
-            }
+            var next = PreviewRotation(direction);
+            Pattern = next.Pattern;
         }
 
         public Tetrimino PreviewRotation(Direction direction)
@@ -87,10 +73,14 @@ namespace WinBlocks.Game.Model
             };
         }
 
-        public void Rotate(Direction direction)
+        public override bool Equals(object obj)
         {
-            var next = PreviewRotation(direction);
-            Pattern = next.Pattern;
+            return Equals(obj as Tetrimino);
+        }
+
+        private bool Equals(Tetrimino other)
+        {
+            return string.Equals(Pattern, other.Pattern) && Y == other.Y && X == other.X;
         }
     }
 }

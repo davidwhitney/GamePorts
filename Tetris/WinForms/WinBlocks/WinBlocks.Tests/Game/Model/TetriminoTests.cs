@@ -108,14 +108,11 @@ namespace WinBlocks.Tests.Game.Model
             var tet = new Tetrimino("II\r\n..");
             tet.RotationStates.Add(".I\r\n.I");
 
-            var parts1 = tet.PatternParts.ToList();
             var cells1 = tet.BlockLocations().ToList();
             tet.Rotate(Direction.Left);
 
-            var parts2 = tet.PatternParts.ToList();
             var cells2 = tet.BlockLocations().ToList();
 
-            Assert.That(parts1, Is.Not.EquivalentTo(parts2));
             Assert.That(cells1, Is.Not.EquivalentTo(cells2));
         }
     }
