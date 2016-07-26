@@ -75,9 +75,8 @@ namespace WinBlocks.Game.Model
         {
             var modifier = direction == Direction.Right ? +1 : -1;
 
-            _currentState = _currentState + modifier >= RotationStates.Count
-                ? 0
-                : _currentState + modifier;
+            _currentState = _currentState + modifier >= RotationStates.Count ? 0 : _currentState + modifier;
+            _currentState = _currentState < 0 ? RotationStates.Count - 1 : _currentState;
 
             var nextMap = RotationStates[_currentState];
 

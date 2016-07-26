@@ -60,16 +60,46 @@ namespace WinBlocks.Tests.Game.Model
         [Test]
         public void PreviewRotation_GivenDirection_ReturnsRotatedState()
         {
-            var tet = new Tetrimino("II\r\nI.")
-            {
-                Y = 0,
-                X = 0
-            };
+            var tet = new Tetrimino("II\r\nI.");
             tet.RotationStates.Add("II\r\n.I");
 
             var nextState = tet.PreviewRotation(Direction.Right);
 
             Assert.That(nextState.Pattern, Is.EqualTo("II\r\n.I"));
+        }
+
+        [Test]
+        public void Rotate_GivenDirection_ChangesState()
+        {
+            var tet = new Tetrimino("II\r\nI.");
+            tet.RotationStates.Add("II\r\n.I");
+
+            tet.Rotate(Direction.Right);
+
+            Assert.That(tet.Pattern, Is.EqualTo("II\r\n.I"));
+        }
+
+        [Test]
+        public void Rotate_RotateAndBack_CanRotateBack()
+        {
+            var tet = new Tetrimino("II\r\nI.");
+            tet.RotationStates.Add("II\r\n.I");
+
+            tet.Rotate(Direction.Right);
+            tet.Rotate(Direction.Left);
+
+            Assert.That(tet.Pattern, Is.EqualTo("II\r\nI."));
+        }
+
+        [Test]
+        public void Rotate_RotateAround_WrapsRotation()
+        {
+            var tet = new Tetrimino("II\r\nI.");
+            tet.RotationStates.Add("II\r\n.I");
+
+            tet.Rotate(Direction.Left);
+
+            Assert.That(tet.Pattern, Is.EqualTo("II\r\n.I"));
         }
     }
 }
