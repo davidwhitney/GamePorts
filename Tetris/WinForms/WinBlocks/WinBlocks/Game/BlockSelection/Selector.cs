@@ -15,13 +15,17 @@ namespace WinBlocks.Game.BlockSelection
             _options = options;
         }
 
-        public Tetrimino Random()
+        public Tetrimino Random(int x = 0, int y = 0)
         {
             var index = _rng.Next(0, _options.Count - 1);
-            return new Tetrimino(_options[index].Pattern)
-            {
-                RotationStates = new List<string>(_options[index].RotationStates)
-            };
+
+            var tetrimino = new Tetrimino(
+                _options[index].Pattern,
+                new List<string>(_options[index].RotationStates).ToArray(),
+                x, y);
+
+            return tetrimino;
+        
         }
     }
 }

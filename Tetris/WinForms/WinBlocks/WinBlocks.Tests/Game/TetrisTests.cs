@@ -18,7 +18,7 @@ namespace WinBlocks.Tests.Game
         public void Setup()
         {
             _selector = new Mock<ISelectBlocks>();
-            _selector.Setup(x => x.Random()).Returns(new Tetrimino("A"));
+            NextSpawnIs(new Tetrimino("A", x: 1));
             _sut = new Tetris(_selector.Object);
         }
 
@@ -36,7 +36,7 @@ namespace WinBlocks.Tests.Game
 
             Assert.That(board.Trim(), Is.EqualTo(Tetris.EmptyBoard));
         }
-        
+
         [Test]
         public void SpawnAndStepTwice_AddsRandomlySelectedBlockToBoard_PieceMovesIntoView()
         {
@@ -78,7 +78,7 @@ namespace WinBlocks.Tests.Game
         [Test]
         public void SpawnAndStep_PieceIsTwoRowsBig_DrawsBoth()
         {
-            _selector.Setup(x => x.Random()).Returns(new Tetrimino("AA\r\nAA"));
+            NextSpawnIs(new Tetrimino("AA\r\nAA", x: 1));
             _sut = NewGame(@"
 ....
 ....
@@ -145,7 +145,7 @@ A...".TrimStart()));
 ....
 ....
 ....");
-            _sut.Current = new Tetrimino("A\r\nA") {X = 0, Y = 2};
+            _sut.Current = new Tetrimino("A\r\nA", x: 0, y: 2);
 
 
             _sut.Step();
@@ -167,8 +167,8 @@ A...".TrimStart()));
 ....
 ....
 ....");
-            _sut.BoardContents.Push(new Tetrimino("A\r\nA") { X = 1, Y = 2 });
-            _sut.Current = new Tetrimino("A\r\nA") {X = 0, Y = 2};
+            _sut.BoardContents.Push(new Tetrimino("A\r\nA", x: 1, y: 2));
+            _sut.Current = new Tetrimino("A\r\nA", x: 0, y: 2);
 
             _sut.Move(Direction.Right);
 
@@ -219,7 +219,7 @@ AA..".TrimStart()));
         [Test]
         public void Step_LastBlockSticks_NewBlockIntroduced()
         {
-            _selector.Setup(x => x.Random()).Returns(new Tetrimino("A"));
+            NextSpawnIs(new Tetrimino("A", x: 1));
             _sut = NewGame(@"
 ....
 ....
@@ -246,19 +246,11 @@ A...".TrimStart()));
 ....
 ....
 LLL.");
-            var almostComplete = new Tetrimino("LLL")
-            {
-                X = 0,
-                Y = 3
-            };
+            var almostComplete = new Tetrimino("LLL", x: 0, y: 3);
 
             _sut.BoardContents.Push(almostComplete);
 
-            _sut.Current = new Tetrimino("A")
-            {
-                X = 3,
-                Y = 2
-            };
+            _sut.Current = new Tetrimino("A", x: 3, y: 2);
 
             _sut.Step();
             _sut.Step();
@@ -287,6 +279,11 @@ LLL.");
                 Rows = state.Item1,
                 Current = state.Item2
             };
+        }
+
+        private void NextSpawnIs(Tetrimino t)
+        {
+            _selector.Setup(x => x.Random(It.IsAny<int>(), It.IsAny<int>())).Returns(t);
         }
     }
 }

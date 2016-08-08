@@ -21,26 +21,17 @@ namespace WinBlocks.Game.Model
             private set { _pattern = value; BlockLocations = GenerateRenderLocations(); }
         }
 
-        public int Y
-        {
-            get { return _y; }
-            set { _y = value; BlockLocations = GenerateRenderLocations(); }
-        }
-
-        public int X
-        {
-            get { return _x; }
-            set { _x = value; BlockLocations = GenerateRenderLocations(); }
-        }
+        public int X { get; private set; }
+        public int Y { get; private set; }
 
         public List<RenderLocation> BlockLocations { get; set; }
         private List<string> PatternParts => Pattern.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
         public List<string> RotationStates { get; set; }
         
-        public Tetrimino(string pattern, string[] rotationStates = null)
+        public Tetrimino(string pattern, string[] rotationStates = null, int x = 0, int y = 0)
         {
             Pattern = pattern;
-            BlockLocations = GenerateRenderLocations();
+            ShiftTo(x, y);
 
             Id = Pattern.First(c => c != '.' && c != '\r' && c != '\n').ToString();
             RotationStates = new List<string> {Pattern};
@@ -51,6 +42,13 @@ namespace WinBlocks.Game.Model
             }
 
             _currentState = 0;
+        }
+
+        public void ShiftTo(int x, int y)
+        {
+            X = x;
+            Y = y;
+            BlockLocations = GenerateRenderLocations();
         }
 
         public void Rotate(Direction direction)

@@ -67,8 +67,6 @@ namespace WinBlocks.Game
             if (Current == null)
             {
                 Current = _selector.Random();
-                Current.Y = 0;
-                Current.X = 1;
                 return;
             }
 
@@ -76,14 +74,15 @@ namespace WinBlocks.Game
             {
                 BoardContents.Push(Current);
                 Current = null;
-                EvaluateLinesForClearing();
+
+                ClearAnyCompleteLines();
                 return;
             }
 
             Move(Direction.Down);
         }
 
-        private void EvaluateLinesForClearing()
+        private void ClearAnyCompleteLines()
         {
             var allBlockLocs = OccupiedLocations.ToList();
             for (var y = 0; y < Height; y++)
@@ -117,8 +116,7 @@ namespace WinBlocks.Game
                 return;
             }
 
-            Current.X = target.X;
-            Current.Y = target.Y;
+            Current.ShiftTo(target.X, target.Y);
         }
 
         public void Rotate(Direction direction)

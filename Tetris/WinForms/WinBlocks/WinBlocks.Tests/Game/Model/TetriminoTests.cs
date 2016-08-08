@@ -13,11 +13,7 @@ namespace WinBlocks.Tests.Game.Model
         [Test]
         public void RenderLocations_SingleLine_ReturnsCorrectCoordsForRendering()
         {
-            var tet = new Tetrimino("II")
-            {
-                Y = 0,
-                X = 0
-            };
+            var tet = new Tetrimino("II");
 
             var locs = tet.BlockLocations.ToList();
 
@@ -28,11 +24,7 @@ namespace WinBlocks.Tests.Game.Model
         [Test]
         public void RenderLocations_SingleLineWithSpace_ReturnsOnlyRequiredElements()
         {
-            var tet = new Tetrimino("I.I")
-            {
-                Y = 0,
-                X = 0
-            };
+            var tet = new Tetrimino("I.I");
 
             var locs = tet.BlockLocations.ToList();
 
@@ -43,11 +35,7 @@ namespace WinBlocks.Tests.Game.Model
         [Test]
         public void RenderLocations_MultiLine_ReturnsCorrectCoordsForRendering()
         {
-            var tet = new Tetrimino("II" + Environment.NewLine + "II")
-            {
-                Y = 0,
-                X = 0
-            };
+            var tet = new Tetrimino("II" + Environment.NewLine + "II");
 
             var locs = tet.BlockLocations.ToList();
 

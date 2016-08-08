@@ -42,11 +42,7 @@ namespace WinBlocks.Tests
             Tetrimino current = null;
             if (shapeLines.Any())
             {
-                current = new Tetrimino(string.Join(Environment.NewLine, shapeLines))
-                {
-                    X = leftMost,
-                    Y = topMost
-                };
+                current = new Tetrimino(string.Join(Environment.NewLine, shapeLines), null, leftMost, topMost);
             }
 
             return new Tuple<List<string>, Tetrimino>(ourRows, current);
