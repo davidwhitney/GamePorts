@@ -8,19 +8,40 @@ namespace WinBlocks.Game.Model
 {
     public class Tetrimino
     {
-        public string Id { get; }
-        public string Pattern { get; private set; }
-        private List<string> PatternParts => Pattern.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-        
-        public int Y { get; set; }
-        public int X { get; set; }
-
-        public List<string> RotationStates { get; set; }
         private int _currentState;
+        private int _y;
+        private int _x;
+        private string _pattern;
 
+        public string Id { get; }
+
+        public string Pattern
+        {
+            get { return _pattern; }
+            private set { _pattern = value; BlockLocations = GenerateRenderLocations(); }
+        }
+
+        public int Y
+        {
+            get { return _y; }
+            set { _y = value; BlockLocations = GenerateRenderLocations(); }
+        }
+
+        public int X
+        {
+            get { return _x; }
+            set { _x = value; BlockLocations = GenerateRenderLocations(); }
+        }
+
+        public List<RenderLocation> BlockLocations { get; set; }
+        private List<string> PatternParts => Pattern.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+        public List<string> RotationStates { get; set; }
+        
         public Tetrimino(string pattern, string[] rotationStates = null)
         {
             Pattern = pattern;
+            BlockLocations = GenerateRenderLocations();
+
             Id = Pattern.First(c => c != '.' && c != '\r' && c != '\n').ToString();
             RotationStates = new List<string> {Pattern};
 
@@ -30,31 +51,6 @@ namespace WinBlocks.Game.Model
             }
 
             _currentState = 0;
-        }
-
-        public IEnumerable<RenderLocation> BlockLocations()
-        {
-            var patternParts = PatternParts; // Snapshot
-            for (var y = 0; y < patternParts.Count; y++)
-            {
-                var row = patternParts[y];
-
-                for (var x = 0; x < row.Length; x++)
-                {
-                    var c = row[x];
-                    if (c == '.')
-                    {
-                        continue;
-                    }
-
-                    yield return new RenderLocation
-                    {
-                        Content = c.ToString(),
-                        X = X + x,
-                        Y = Y + y
-                    };
-                }
-            }
         }
 
         public void Rotate(Direction direction)
@@ -76,6 +72,33 @@ namespace WinBlocks.Game.Model
                 X = X,
                 Y = Y
             };
+        }
+
+        private List<RenderLocation> GenerateRenderLocations()
+        {
+            var locs = new List<RenderLocation>();
+            var patternParts = PatternParts; // Snapshot
+            for (var y = 0; y < patternParts.Count; y++)
+            {
+                var row = patternParts[y];
+
+                for (var x = 0; x < row.Length; x++)
+                {
+                    var c = row[x];
+                    if (c == '.')
+                    {
+                        continue;
+                    }
+                    locs.Add(new RenderLocation
+                    {
+                        Content = c.ToString(),
+                        X = X + x,
+                        Y = Y + y
+                    });
+                }
+            }
+
+            return locs;
         }
 
         public override bool Equals(object obj)

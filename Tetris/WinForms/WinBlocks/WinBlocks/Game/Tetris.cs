@@ -14,7 +14,7 @@ namespace WinBlocks.Game
         public List<string> Rows { get; set; }
         public Tetrimino Current { get; set; }
         public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
-        public IEnumerable<RenderLocation> OccupiedLocations => BoardContents.SelectMany(x => x.BlockLocations());
+        public IEnumerable<RenderLocation> OccupiedLocations => BoardContents.SelectMany(x => x.BlockLocations);
         public List<IPostProcessContent> PostProcessors = new List<IPostProcessContent>();
 
         public int Height => Rows.Count;
@@ -41,7 +41,7 @@ namespace WinBlocks.Game
                 toDraw.Add(Current);
             }
 
-            var blocks = toDraw.SelectMany(x => x.BlockLocations()).ToList();
+            var blocks = toDraw.SelectMany(x => x.BlockLocations).ToList();
 
             for (var y = 0; y < Height; y++)
             {
@@ -72,14 +72,36 @@ namespace WinBlocks.Game
                 return;
             }
 
-            if (!Current.BlockLocations().All(loc => CanMoveInto(loc.X, loc.Y + 1)))
+            if (!Current.BlockLocations.All(loc => CanMoveInto(loc.X, loc.Y + 1)))
             {
                 BoardContents.Push(Current);
                 Current = null;
+                EvaluateLinesForClearing();
                 return;
             }
 
             Move(Direction.Down);
+        }
+
+        private void EvaluateLinesForClearing()
+        {
+            var allBlockLocs = OccupiedLocations.ToList();
+            for (var y = 0; y < Height; y++)
+            {
+                var blocksOnThisY = allBlockLocs.Where(b => b.Y == y).ToList();
+                if (blocksOnThisY.Count != Width)
+                {
+                    continue;
+                }
+
+                foreach (var block in blocksOnThisY)
+                {
+                    foreach (var tet in BoardContents)
+                    {
+                        tet.BlockLocations.RemoveAll(l => tet.BlockLocations.Where(location => location == block).ToList().Contains(l));
+                    }
+                }
+            }
         }
 
         public void Move(Direction direction)

@@ -238,6 +238,47 @@ A...");
 A...".TrimStart()));
         }
 
+        [Test]
+        public void Step_BlockWouldCompleteTheLine_LineIsRemoved()
+        {
+            _sut = NewGame(@"
+....
+....
+....
+LLL.");
+            var almostComplete = new Tetrimino("LLL")
+            {
+                X = 0,
+                Y = 3
+            };
+
+            _sut.BoardContents.Push(almostComplete);
+
+            _sut.Current = new Tetrimino("A")
+            {
+                X = 3,
+                Y = 2
+            };
+
+            _sut.Step();
+            _sut.Step();
+
+            var render = _sut.ToString().Trim();
+
+            //            Assert.That(render, Is.EqualTo(@"
+            //....
+            //....
+            //....
+            //LLLA".TrimStart()));  <-- THIS IS INCORRECT.
+
+            Assert.That(render, Is.EqualTo(@"
+....
+....
+....
+....".TrimStart()));
+
+        }
+
         private Tetris NewGame(string map)
         {
             var state = new BoardBuilderForTests().Populate(map);

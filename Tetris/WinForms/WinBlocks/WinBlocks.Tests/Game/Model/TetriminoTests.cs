@@ -19,7 +19,7 @@ namespace WinBlocks.Tests.Game.Model
                 X = 0
             };
 
-            var locs = tet.BlockLocations().ToList();
+            var locs = tet.BlockLocations.ToList();
 
             Assert.That(locs[0], Is.EqualTo(new RenderLocation(0, 0, "I")));
             Assert.That(locs[1], Is.EqualTo(new RenderLocation(1, 0, "I")));
@@ -34,7 +34,7 @@ namespace WinBlocks.Tests.Game.Model
                 X = 0
             };
 
-            var locs = tet.BlockLocations().ToList();
+            var locs = tet.BlockLocations.ToList();
 
             Assert.That(locs[0], Is.EqualTo(new RenderLocation(0, 0, "I")));
             Assert.That(locs[1], Is.EqualTo(new RenderLocation(2, 0, "I")));
@@ -49,7 +49,7 @@ namespace WinBlocks.Tests.Game.Model
                 X = 0
             };
 
-            var locs = tet.BlockLocations().ToList();
+            var locs = tet.BlockLocations.ToList();
 
             Assert.That(locs[0], Is.EqualTo(new RenderLocation(0, 0, "I")));
             Assert.That(locs[1], Is.EqualTo(new RenderLocation(1, 0, "I")));
@@ -108,10 +108,10 @@ namespace WinBlocks.Tests.Game.Model
             var tet = new Tetrimino("II\r\n..");
             tet.RotationStates.Add(".I\r\n.I");
 
-            var cells1 = tet.BlockLocations().ToList();
+            var cells1 = tet.BlockLocations.ToList();
             tet.Rotate(Direction.Left);
 
-            var cells2 = tet.BlockLocations().ToList();
+            var cells2 = tet.BlockLocations.ToList();
 
             Assert.That(cells1, Is.Not.EquivalentTo(cells2));
         }
