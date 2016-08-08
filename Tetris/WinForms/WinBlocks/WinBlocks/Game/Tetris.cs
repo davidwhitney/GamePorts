@@ -59,7 +59,7 @@ namespace WinBlocks.Game
                 snapshot.Add(sbLine.ToString());
             }
 
-            return string.Join(Environment.NewLine, snapshot);
+            return string.Join(Environment.NewLine, snapshot).Trim();
         }
 
         public void Step()

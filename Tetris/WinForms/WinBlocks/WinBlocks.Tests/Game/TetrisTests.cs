@@ -13,18 +13,24 @@ namespace WinBlocks.Tests.Game
     {
         private Tetris _sut;
         private Mock<ISelectBlocks> _selector;
+        private const string FourByFourBoard = @"....
+....
+....
+....";
 
         [SetUp]
         public void Setup()
         {
             _selector = new Mock<ISelectBlocks>();
             NextSpawnIs(new Tetrimino("A", x: 1));
-            _sut = new Tetris(_selector.Object);
+            _sut = NewGame();
         }
 
         [Test]
         public void Ctor_ProvidesEmptyBoard()
         {
+            _sut = new Tetris(_selector.Object);
+
             Assert.That(_sut.Width, Is.EqualTo(10));
             Assert.That(_sut.Height, Is.EqualTo(22));
         }
@@ -32,25 +38,21 @@ namespace WinBlocks.Tests.Game
         [Test]
         public void ToString_RendersBoard()
         {
+            _sut = new Tetris(_selector.Object);
+
             var board = _sut.ToString();
 
             Assert.That(board.Trim(), Is.EqualTo(Tetris.EmptyBoard));
         }
 
         [Test]
-        public void SpawnAndStepTwice_AddsRandomlySelectedBlockToBoard_PieceMovesIntoView()
+        public void Step_EmptyBoard_AddsRandomlySelectedBlockToBoard()
         {
-            _sut = NewGame(@"
-....
-....
-....
-....");
+            NextSpawnIs(new Tetrimino("A", x: 1));
 
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 .A..
 ....
 ....
@@ -61,35 +63,21 @@ namespace WinBlocks.Tests.Game
         [TestCase(Direction.Left, "A...")]
         public void Move_GivenDirection_MovesPiece(Direction dir, string match)
         {
-            _sut = NewGame(@"
-....
-....
-....
-....");
-
             _sut.Step(); // spawn
+
             _sut.Move(dir);
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render.Take(4), Is.EqualTo(match));
+            Assert.That(_sut.ToString().Take(4), Is.EqualTo(match));
         }
 
         [Test]
-        public void SpawnAndStep_PieceIsTwoRowsBig_DrawsBoth()
+        public void Step_PieceIsTwoRowsBig_DrawsBoth()
         {
             NextSpawnIs(new Tetrimino("AA\r\nAA", x: 1));
-            _sut = NewGame(@"
-....
-....
-....
-....");
 
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 .AA.
 .AA.
 ....
@@ -97,24 +85,16 @@ namespace WinBlocks.Tests.Game
         }
 
         [Test]
-        public void SpawnAndStepAndStepPieceMovesDownBoard()
+        public void StepTwice_EmptyBoard_PieceIsSpawnedAndMoved()
         {
-            _sut = NewGame(@"
-..........
-..........
-..........
-..........");
-
             _sut.Step();
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
-..........
-.A........
-..........
-..........".TrimStart()));
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
+....
+.A..
+....
+....".TrimStart()));
         }
 
         [Test]
@@ -128,9 +108,7 @@ A...");
             
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 ....
 ....
 ....
@@ -138,21 +116,17 @@ A...".TrimStart()));
         }
 
         [Test]
-        public void Step_CurrentCannotMoveAndIsMoreThanOneLineBig_Sticks()
+        public void Step_ActiveMultiLinePiece_MovesTogether()
         {
             _sut = NewGame(@"
 ....
-....
-....
+A...
+A...
 ....");
-            _sut.Current = new Tetrimino("A\r\nA", x: 0, y: 2);
-
 
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 ....
 ....
 A...
@@ -162,13 +136,8 @@ A...".TrimStart()));
         [Test]
         public void Move_AttemptToMoveOntoAnotherBlock_WontMove()
         {
-            _sut = NewGame(@"
-....
-....
-....
-....");
+            _sut.Current = new Tetrimino("B\r\nB", x: 0, y: 2);
             _sut.BoardContents.Push(new Tetrimino("A\r\nA", x: 1, y: 2));
-            _sut.Current = new Tetrimino("A\r\nA", x: 0, y: 2);
 
             _sut.Move(Direction.Right);
 
@@ -177,8 +146,8 @@ A...".TrimStart()));
             Assert.That(render, Is.EqualTo(@"
 ....
 ....
-AA..
-AA..".TrimStart()));
+BA..
+BA..".TrimStart()));
         }
 
         [Test]
@@ -186,14 +155,12 @@ AA..".TrimStart()));
         {
             _sut = NewGame(@"
 ....
-.X..");
+.X..", lockPieces: true);
             
-            _sut.Step();
+            _sut.Step(); // Spawn new
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 .A..
 .X..".TrimStart()));
         }
@@ -203,10 +170,9 @@ AA..".TrimStart()));
         {
             _sut = NewGame(@"
 ....
-.X..");
+.X..", lockPieces: true);
             
-            _sut.Step();
-            _sut.Step();
+            _sut.Step(); // Spawn new
             _sut.Step();
 
             var render = _sut.ToString().Trim();
@@ -224,9 +190,8 @@ AA..".TrimStart()));
 ....
 ....
 ....
-A...");
+A...", lockPieces: true);
             
-            _sut.Step(); // Because we're loading from pattern, this step will clear the current block variable
             _sut.Step();
 
             var render = _sut.ToString().Trim();
@@ -245,40 +210,41 @@ A...".TrimStart()));
 ....
 ....
 ....
-LLL.");
-            var almostComplete = new Tetrimino("LLL", x: 0, y: 3);
+LLL.", lockPieces: true);
 
-            _sut.BoardContents.Push(almostComplete);
-
-            _sut.Current = new Tetrimino("A", x: 3, y: 2);
+            _sut.Current = GenerateCurrentPieceAt(@"
+....
+....
+...A
+....");
 
             _sut.Step();
-            _sut.Step();
+            _sut.Step(); // Line cleared as game "ticks"
 
-            var render = _sut.ToString().Trim();
-
-            //            Assert.That(render, Is.EqualTo(@"
-            //....
-            //....
-            //....
-            //LLLA".TrimStart()));  <-- THIS IS INCORRECT.
-
-            Assert.That(render, Is.EqualTo(@"
-....
-....
-....
-....".TrimStart()));
+            Assert.That(_sut.ToString(), Is.EqualTo(FourByFourBoard));
 
         }
 
-        private Tetris NewGame(string map)
+        private Tetrimino GenerateCurrentPieceAt(string mask)
+        {
+            return NewGame(mask).Current;
+        }
+
+        private Tetris NewGame(string map = FourByFourBoard, bool lockPieces = false)
         {
             var state = new BoardBuilderForTests().Populate(map);
-            return new Tetris(_selector.Object)
+            var t = new Tetris(_selector.Object)
             {
                 Rows = state.Item1,
                 Current = state.Item2
             };
+
+            if (lockPieces)
+            {
+                t.Step();
+            }
+
+            return t;
         }
 
         private void NextSpawnIs(Tetrimino t)

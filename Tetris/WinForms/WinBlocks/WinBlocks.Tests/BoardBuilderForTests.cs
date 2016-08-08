@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WinBlocks.Game;
 using WinBlocks.Game.Model;
 
 namespace WinBlocks.Tests
@@ -30,9 +29,9 @@ namespace WinBlocks.Tests
                         leftMost = index < leftMost ? index : leftMost;
                         topMost = rowIndex > topMost ? rowIndex : topMost;
                         shapeRow += letter;
-
                     }
                 }
+
                 if (!string.IsNullOrWhiteSpace(shapeRow))
                 {
                     shapeLines.Add(shapeRow);
