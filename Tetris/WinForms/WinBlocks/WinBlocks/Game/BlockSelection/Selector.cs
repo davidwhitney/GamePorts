@@ -18,14 +18,7 @@ namespace WinBlocks.Game.BlockSelection
         public Tetrimino Random(int x = 0, int y = 0)
         {
             var index = _rng.Next(0, _options.Count - 1);
-
-            var tetrimino = new Tetrimino(
-                _options[index].Pattern,
-                new List<string>(_options[index].RotationStates).ToArray(),
-                x, y);
-
-            return tetrimino;
-        
+            return ((Tetrimino) _options[index].Clone()).ShiftTo(x, y);
         }
     }
 }

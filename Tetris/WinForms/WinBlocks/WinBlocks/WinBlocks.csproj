@@ -58,6 +58,7 @@
     <Compile Include="Game\Rendering\IPostProcessContent.cs" />
     <Compile Include="Game\BlockSelection\ISelectBlocks.cs" />
     <Compile Include="Game\Rendering\Location.cs" />
+    <Compile Include="Game\Rendering\TetrisTextRenderer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game\Rendering\RenderLocation.cs" />

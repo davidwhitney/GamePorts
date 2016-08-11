@@ -6,15 +6,11 @@ using WinBlocks.Game.Rendering;
 
 namespace WinBlocks.Game.Model
 {
-    public class Tetrimino
+    public class Tetrimino : ICloneable
     {
-        private int _currentState;
-        private int _y;
-        private int _x;
-        private string _pattern;
-
         public string Id { get; }
 
+        private string _pattern;
         public string Pattern
         {
             get { return _pattern; }
@@ -23,11 +19,13 @@ namespace WinBlocks.Game.Model
 
         public int X { get; private set; }
         public int Y { get; private set; }
+        public List<RenderLocation> BlockLocations { get; private set; }
 
-        public List<RenderLocation> BlockLocations { get; set; }
         private List<string> PatternParts => Pattern.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
         public List<string> RotationStates { get; set; }
-        
+
+        private int _currentState;
+
         public Tetrimino(string pattern, string[] rotationStates = null, int x = 0, int y = 0)
         {
             Pattern = pattern;
@@ -44,11 +42,12 @@ namespace WinBlocks.Game.Model
             _currentState = 0;
         }
 
-        public void ShiftTo(int x, int y)
+        public Tetrimino ShiftTo(int x, int y)
         {
             X = x;
             Y = y;
             BlockLocations = GenerateRenderLocations();
+            return this;
         }
 
         public void Rotate(Direction direction)
@@ -102,6 +101,14 @@ namespace WinBlocks.Game.Model
         public override bool Equals(object obj)
         {
             return Equals(obj as Tetrimino);
+        }
+
+        public object Clone()
+        {
+            return new Tetrimino(
+                Pattern,
+                RotationStates.ToArray(),
+                X, Y);
         }
 
         private bool Equals(Tetrimino other)
