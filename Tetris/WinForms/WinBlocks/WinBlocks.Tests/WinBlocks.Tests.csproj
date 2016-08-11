@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardBuilderForTests.cs" />
+    <Compile Include="Game\BlockSelection\TheRandomGeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Game\BlockSelection\SelectorTests.cs" />
     <Compile Include="Game\Model\TetriminoTests.cs" />

@@ -47,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameFactory.cs" />
+    <Compile Include="Game\BlockSelection\AlexGenerator.cs" />
+    <Compile Include="Game\BlockSelection\GrandmasterAceGenerator.cs" />
+    <Compile Include="Game\BlockSelection\TheRandomGenerator.cs" />
     <Compile Include="Game\Input\Direction.cs" />
     <Compile Include="DisplayPostProcessor.cs" />
     <Compile Include="Form1.cs">
