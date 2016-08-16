@@ -108,7 +108,7 @@ namespace WinBlocks.Game.Model
         {
             return new Tetrimino(
                 Pattern,
-                RotationStates.ToArray(),
+                RotationStates.Skip(1).ToArray(),
                 BoundingBoxLocation.X, BoundingBoxLocation.Y);
         }
 
