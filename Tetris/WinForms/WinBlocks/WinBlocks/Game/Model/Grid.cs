@@ -61,8 +61,7 @@ namespace WinBlocks.Game.Model
             var s = new List<List<T>>();
             for (var y = 0; y < Height; y++)
             {
-                var row = CreateRow(y, copy);
-                s.Add(row);
+                s.Add(CreateRow(y, copy));
             }
             return s;
         }
