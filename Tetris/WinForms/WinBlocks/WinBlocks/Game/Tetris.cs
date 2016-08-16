@@ -17,8 +17,6 @@ namespace WinBlocks.Game
         }
 
         public Tetrimino Current { get; set; }
-        public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
-        public IEnumerable<RenderLocation> OccupiedLocations => BoardContents.SelectMany(x => x.BlockLocations).ToList();
         public List<IPostProcessContent> PostProcessors => _renderer.PostProcessors;
 
         public int Height => _board.Height;
@@ -27,9 +25,7 @@ namespace WinBlocks.Game
         private readonly ISelectBlocks _selector;
         private readonly TetrisTextRenderer _renderer;
         private readonly TetrisGrid _board;
-
-        public static string EmptyBoard => string.Join(Environment.NewLine, BoardRows);
-        private static List<string> BoardRows => new List<string>(Enumerable.Repeat("..........", 22));
+        
 
         public Tetris(ISelectBlocks selector)
         {
@@ -40,7 +36,7 @@ namespace WinBlocks.Game
 
         public override string ToString()
         {
-            var toDraw = new List<Tetrimino>(BoardContents);
+            var toDraw = new List<Tetrimino>();
             if (Current != null)
             {
                 toDraw.Add(Current);
@@ -57,7 +53,8 @@ namespace WinBlocks.Game
                 return;
             }
 
-            if (!Current.BlockLocations.All(loc => CanMoveInto(loc.X, loc.Y + 1)))
+            var downwardsMovement = new Delta { Y = +1 };
+            if (!AllBlocksInTetriminoCanMove(Current, downwardsMovement))
             {
                 Lock();
                 ClearAnyCompleteLines();
@@ -69,33 +66,25 @@ namespace WinBlocks.Game
 
         private void Lock()
         {
-            BoardContents.Push(Current);
-
             foreach (var location in Current.BlockLocations)
             {
                 _board.SetValue(location.X, location.Y, location);
             }
-
             Current = null;
         }
 
         private void ClearAnyCompleteLines()
         {
-            var allBlockLocs = OccupiedLocations.ToList();
-            for (var y = 0; y < Height; y++)
+            foreach (var row in _board.RawRows)
             {
-                var blocksOnThisY = allBlockLocs.Where(b => b.Y == y).ToList();
-                if (blocksOnThisY.Count != Width)
+                if (row.Any(x => x.Content == "."))
                 {
                     continue;
                 }
 
-                foreach (var block in blocksOnThisY)
+                foreach (var cell in row)
                 {
-                    foreach (var tet in BoardContents)
-                    {
-                        tet.BlockLocations.RemoveAll(l => tet.BlockLocations.Where(location => location.Equals(block)).ToList().Contains(l));
-                    }
+                    cell.Content = ".";
                 }
             }
         }
@@ -106,13 +95,13 @@ namespace WinBlocks.Game
             {
                 return;
             }
-            
-            var target = EstablishTarget(direction);
-            if (!CanMoveInto(target.X, target.Y))
+
+            if (!AllBlocksInTetriminoCanMove(Current, direction.ToDelta()))
             {
                 return;
             }
 
+            var target = Current.Location.From(direction.ToDelta());
             Current.ShiftTo(target.X, target.Y);
         }
 
@@ -121,8 +110,24 @@ namespace WinBlocks.Game
             Current?.Rotate(direction);
         }
 
+        private bool AllBlocksInTetriminoCanMove(Tetrimino t, Delta delta)
+        {
+            return t.BlockLocations.All(loc => CanMoveInto(loc.From(delta)));
+        }
+
+        // BUG: This needs to check each individual piece.
+        private bool CanMoveInto(Location loc)
+        {
+            return CanMoveInto(loc.X, loc.Y);
+        }
+
         private bool CanMoveInto(int x, int y)
         {
+            if (x < 0 || y < 0)
+            {
+                return false;
+            }
+
             if (y >= Height)
             {
                 return false;
@@ -136,27 +141,32 @@ namespace WinBlocks.Game
             var targetLocation = _board.ValueAt(x, y);
             return targetLocation.Content == ".";
         }
+    }
 
-        private Location EstablishTarget(Direction direction)
+    public class Delta : Location { }
+
+    public static class MovementExtensions
+    {
+        public static Delta ToDelta(this Direction direction)
         {
-            var targetLocation = new Location {X = Current.X, Y = Current.Y};
+            var delta = new Delta();
 
             if (direction == Direction.Right)
             {
-                targetLocation.X++;
+                delta.X = 1;
             }
 
             if (direction == Direction.Left)
             {
-                targetLocation.X--;
+                delta.X = -1;
             }
 
             if (direction == Direction.Down)
             {
-                targetLocation.Y++;
+                delta.Y = 1;
             }
 
-            return targetLocation;
+            return delta;
         }
     }
 }

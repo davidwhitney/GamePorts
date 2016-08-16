@@ -17,8 +17,8 @@ namespace WinBlocks.Game.Model
             private set { _pattern = value; BlockLocations = GenerateRenderLocations(); }
         }
 
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public Location Location { get; private set; } = new Location();
+
         public List<RenderLocation> BlockLocations { get; private set; }
 
         private List<string> PatternParts => Pattern.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
@@ -44,8 +44,8 @@ namespace WinBlocks.Game.Model
 
         public Tetrimino ShiftTo(int x, int y)
         {
-            X = x;
-            Y = y;
+            Location.X = x;
+            Location.Y = y;
             BlockLocations = GenerateRenderLocations();
             return this;
         }
@@ -66,8 +66,7 @@ namespace WinBlocks.Game.Model
 
             return new Tetrimino(nextMap)
             {
-                X = X,
-                Y = Y
+                Location = Location
             };
         }
 
@@ -89,8 +88,8 @@ namespace WinBlocks.Game.Model
                     locs.Add(new RenderLocation
                     {
                         Content = c.ToString(),
-                        X = X + x,
-                        Y = Y + y
+                        X = Location.X + x,
+                        Y = Location.Y + y
                     });
                 }
             }
@@ -108,12 +107,14 @@ namespace WinBlocks.Game.Model
             return new Tetrimino(
                 Pattern,
                 RotationStates.ToArray(),
-                X, Y);
+                Location.X, Location.Y);
         }
 
         private bool Equals(Tetrimino other)
         {
-            return string.Equals(Pattern, other.Pattern) && Y == other.Y && X == other.X;
+            return string.Equals(Pattern, other.Pattern) 
+                && Location.Y == other.Location.Y 
+                && Location.X == other.Location.X;
         }
     }
 }

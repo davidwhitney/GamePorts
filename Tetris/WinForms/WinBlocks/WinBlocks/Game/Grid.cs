@@ -24,6 +24,11 @@ namespace WinBlocks.Game
 
         public T ValueAt(int x, int y)
         {
+            if (x < 0 || y < 0 || x > Width || y > Height)
+            {
+                return null;
+            }
+
             return Storage[y][x];
         }
 
