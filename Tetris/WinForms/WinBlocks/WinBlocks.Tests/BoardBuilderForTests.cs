@@ -10,27 +10,32 @@ namespace WinBlocks.Tests
         public Tuple<List<string>,Tetrimino> Populate(string pattern)
         {
             var lines = pattern.Trim().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            var ourRows = new List<string>(lines);
+            var boardMap = new List<string>(lines);
             
             var leftMost = int.MaxValue;
             var topMost = 0;
             var shapeLines = new List<string>();
 
-            for (var rowIndex = 0; rowIndex < ourRows.Count; rowIndex++)
+            for (var y = 0; y < boardMap.Count; y++)
             {
-                var row = ourRows[rowIndex];
+                var row = boardMap[y];
                 var shapeRow = "";
-                for (var index = 0; index < row.Length; index++)
+                for (var x = 0; x < row.Length; x++)
                 {
-                    var letter = row[index];
+                    var letter = row[x];
 
                     if (letter == 'C')
                     {
-                        leftMost = index < leftMost ? index : leftMost;
-                        topMost = rowIndex > topMost ? rowIndex : topMost;
+                        leftMost = x < leftMost ? x : leftMost;
+                        topMost = y > topMost ? y : topMost;
                         shapeRow += letter;
+
+                        row = row.Insert(x, ".");
+                        row = row.Remove(x + 1, 1);
                     }
                 }
+
+                boardMap[y] = row;
 
                 if (!string.IsNullOrWhiteSpace(shapeRow))
                 {
@@ -44,7 +49,7 @@ namespace WinBlocks.Tests
                 current = new Tetrimino(string.Join(Environment.NewLine, shapeLines), null, leftMost, topMost);
             }
 
-            return new Tuple<List<string>, Tetrimino>(ourRows, current);
+            return new Tuple<List<string>, Tetrimino>(boardMap, current);
         }
     }
 }
