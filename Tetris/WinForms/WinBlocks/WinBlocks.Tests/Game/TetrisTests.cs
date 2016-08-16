@@ -85,7 +85,7 @@ namespace WinBlocks.Tests.Game
 ....
 ....
 ....
-A...");
+C...");
             
             _sut.Step();
 
@@ -93,7 +93,7 @@ A...");
 ....
 ....
 ....
-A...".TrimStart()));
+C...".TrimStart()));
         }
 
         [Test]
@@ -113,8 +113,11 @@ A...".TrimStart()));
         [Test]
         public void Move_AttemptToMoveOntoAnotherBlock_WontMove()
         {
-            _sut.Current = new Tetrimino("B\r\nB", x: 0, y: 2);
-           // _sut.BoardContents.Push(new Tetrimino("A\r\nA", x: 1, y: 2));
+            _sut = NewGame(@"
+....
+....
+CA..
+CA..");
 
             _sut.Move(Direction.Right);
 
@@ -123,8 +126,8 @@ A...".TrimStart()));
             Assert.That(render, Is.EqualTo(@"
 ....
 ....
-BA..
-BA..".TrimStart()));
+CA..
+CA..".TrimStart()));
         }
 
         [Test]
@@ -132,7 +135,7 @@ BA..".TrimStart()));
         {
             _sut = NewGame(@"
 ....
-.X..", lockPieces: true);
+.X..");
             
             _sut.Step(); // Spawn new
             _sut.Step();
@@ -147,7 +150,7 @@ BA..".TrimStart()));
         {
             _sut = NewGame(@"
 ....
-.X..", lockPieces: true);
+.X..");
             
             _sut.Step(); // Spawn new
             _sut.Step();
@@ -167,7 +170,7 @@ BA..".TrimStart()));
 ....
 ....
 ....
-A...", lockPieces: true);
+A...");
             
             _sut.Step();
 
@@ -186,39 +189,29 @@ A...".TrimStart()));
             _sut = NewGame(@"
 ....
 ....
-....
-LLL.", lockPieces: true);
-
-            _sut.Current = GenerateCurrentPieceAt(@"
-....
-....
-...A
-....");
+...C
+AAA.");
 
             _sut.Step();
             _sut.Step(); // Line cleared as game "ticks"
 
-            Assert.That(_sut.ToString(), Is.EqualTo(FourByFourBoard));
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
+....
+....
+....
+....".Trim()));
 
         }
 
-        private Tetrimino GenerateCurrentPieceAt(string mask)
-        {
-            return NewGame(mask).Current;
-        }
-
-        private Tetris NewGame(string map = FourByFourBoard, bool lockPieces = false)
+        private Tetris NewGame(string map = FourByFourBoard)
         {
             var state = new BoardBuilderForTests().Populate(map);
-            var t = new Tetris(_selector.Object);
-            t.Rows = state.Item1;
-            t.Current = state.Item2;
-
-            if (lockPieces)
+            var t = new Tetris(_selector.Object)
             {
-                t.Step();
-            }
-
+                Rows = state.Item1,
+                Current = state.Item2
+            };
+            
             return t;
         }
 

@@ -11,7 +11,7 @@ namespace WinBlocks.Tests
         {
             var lines = pattern.Trim().Split(new[] { Environment.NewLine }, StringSplitOptions.None);
             var ourRows = new List<string>(lines);
-
+            
             var leftMost = int.MaxValue;
             var topMost = 0;
             var shapeLines = new List<string>();
@@ -24,7 +24,7 @@ namespace WinBlocks.Tests
                 {
                     var letter = row[index];
 
-                    if (letter != '.')
+                    if (letter == 'C')
                     {
                         leftMost = index < leftMost ? index : leftMost;
                         topMost = rowIndex > topMost ? rowIndex : topMost;
