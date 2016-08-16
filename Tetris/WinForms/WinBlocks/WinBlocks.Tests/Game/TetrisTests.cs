@@ -224,13 +224,7 @@ B...".Trim()));
         private Tetris NewGame(string map = FourByFourBoard)
         {
             var state = new BoardBuilderForTests().Populate(map);
-            var t = new Tetris(_selector.Object)
-            {
-                Rows = state.Item1,
-                Current = state.Item2
-            };
-            
-            return t;
+            return new Tetris(_selector.Object, state.Item1, state.Item2);
         }
 
         private void NextSpawnIs(Tetrimino t)

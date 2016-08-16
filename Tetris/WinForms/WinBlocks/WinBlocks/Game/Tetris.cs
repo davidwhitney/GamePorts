@@ -9,40 +9,35 @@ namespace WinBlocks.Game
 {
     public class Tetris
     {
-        public List<string> Rows
-        {
-            get { return _board.Rows; }
-            set { _board.Rows = value; }
-        }
-
-        public Tetrimino Current { get; set; }
         public List<IPostProcessContent> PostProcessors => _renderer.PostProcessors;
 
+        private Tetrimino _current;
         private readonly ISelectBlocks _selector;
         private readonly TetrisTextRenderer _renderer;
         private readonly TetrisGrid _board;
 
-        public Tetris(ISelectBlocks selector)
+        public Tetris(ISelectBlocks selector, List<string> gridRows = null, Tetrimino active = null)
         {
             _selector = selector;
             _renderer = new TetrisTextRenderer();
-            _board = new TetrisGrid(10, 22);
+            _board = gridRows == null ? new TetrisGrid(10, 22) : new TetrisGrid(gridRows);
+            _current = active;
         }
 
         public override string ToString()
         {
-            return _renderer.Render(_board, Current).Trim();
+            return _renderer.Render(_board, _current).Trim();
         }
 
         public void Step()
         {
-            if (Current == null)
+            if (_current == null)
             {
-                Current = _selector.Random();
+                _current = _selector.Random();
                 return;
             }
 
-            if (!CanMoveInto(Current, new Delta { Y = +1 }))
+            if (!CanMoveInto(_current, new Delta { Y = +1 }))
             {
                 Lock();
                 ClearAnyCompleteLines();
@@ -54,18 +49,15 @@ namespace WinBlocks.Game
 
         private void Lock()
         {
-            foreach (var location in Current.BlockLocations)
-            {
-                _board.SetValue(location.X, location.Y, location);
-            }
-            Current = null;
+            _current.BlockLocations.ForEach(loc => _board.SetValue(loc.X, loc.Y, loc));
+            _current = null;
         }
 
         private void ClearAnyCompleteLines()
         {
             var rowsToClear = new List<int>();
 
-            for (var y = _board.RawRows.Count -1; y >=0; y--)
+            for (var y = _board.RawRows.Count - 1; y >= 0; y--)
             {
                 var row = _board.RawRows[y];
                 if (row.Any(x => x.Content == "."))
@@ -76,36 +68,29 @@ namespace WinBlocks.Game
                 rowsToClear.Add(y);
             }
 
-            foreach (var y in rowsToClear)
-            {
-                _board.RawRows.RemoveAt(y);
-            }
-
-            for (int newRowCount = 0; newRowCount < rowsToClear.Count; newRowCount++)
-            {
-                _board.RawRows.Insert(0, _board.CreateRow());
-            }
+            rowsToClear.ForEach(c => _board.RawRows.RemoveAt(c));
+            rowsToClear.ForEach(c => _board.RawRows.Insert(0, _board.CreateRow()));
         }
 
         public void Move(Direction direction)
         {
-            if (Current == null)
+            if (_current == null)
             {
                 return;
             }
 
-            if (!CanMoveInto(Current, direction.ToDelta()))
+            if (!CanMoveInto(_current, direction.ToDelta()))
             {
                 return;
             }
 
-            var target = Current.BoundingBoxLocation.From(direction.ToDelta());
-            Current.ShiftTo(target.X, target.Y);
+            var target = _current.BoundingBoxLocation.From(direction.ToDelta());
+            _current.ShiftTo(target.X, target.Y);
         }
 
         public void Rotate(Direction direction)
         {
-            Current?.Rotate(direction);
+            _current?.Rotate(direction);
         }
 
         private bool CanMoveInto(Tetrimino t, Delta delta)

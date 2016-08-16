@@ -14,6 +14,12 @@ namespace WinBlocks.Game.Model
         {
         }
 
+        public TetrisGrid(List<string> grid)
+            : base(1,1, () => new RenderLocation { Content = EmptySpace })
+        {
+            Rows = grid;
+        }
+
         public List<string> Rows
         {
             get { return Storage.Select(row => string.Join("", row)).ToList(); }
@@ -44,7 +50,7 @@ namespace WinBlocks.Game.Model
             return ValueAt(x, y).Content == EmptySpace;
         }
 
-        public new object Clone()
+        public object Clone()
         {
             return new TetrisGrid(Width, Height)
             {

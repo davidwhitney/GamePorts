@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WinBlocks.Game.Model
 {
-    public class Grid<T> : ICloneable where T : class
+    public class Grid<T> where T : class
     {
         private readonly Func<T> _defaultCell;
         public int Width { get; set; }
@@ -55,15 +55,7 @@ namespace WinBlocks.Game.Model
         {
             Storage[y][x] = val;
         }
-
-        public object Clone()
-        {
-            return new Grid<T>(Width, Height, _defaultCell)
-            {
-                Storage = InitiliseStorage(true)
-            };
-        }
-
+        
         protected List<List<T>> InitiliseStorage(bool copy = false)
         {
             var s = new List<List<T>>();
