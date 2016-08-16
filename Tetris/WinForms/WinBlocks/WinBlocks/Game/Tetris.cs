@@ -31,7 +31,7 @@ namespace WinBlocks.Game
 
         public override string ToString()
         {
-            return _renderer.Render(_board, Current);
+            return _renderer.Render(_board, Current).Trim();
         }
 
         public void Step()

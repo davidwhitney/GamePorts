@@ -8,6 +8,9 @@ using WinBlocks.Game.Model;
 
 namespace WinBlocks.Tests.Game
 {
+    /// <summary>
+    /// Use C's in the matrix here to set the current piece.
+    /// </summary>
     [TestFixture]
     public class TetrisTests
     {
@@ -121,9 +124,7 @@ CA..");
 
             _sut.Move(Direction.Right);
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 ....
 ....
 CA..
@@ -155,9 +156,7 @@ CA..".TrimStart()));
             _sut.Step(); // Spawn new
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 .A..
 .X..".TrimStart()));
         }
@@ -174,9 +173,7 @@ A...");
             
             _sut.Step();
 
-            var render = _sut.ToString().Trim();
-
-            Assert.That(render, Is.EqualTo(@"
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
 .A..
 ....
 ....
