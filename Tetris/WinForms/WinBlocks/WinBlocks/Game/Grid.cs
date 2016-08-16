@@ -4,23 +4,23 @@ using System.Linq;
 
 namespace WinBlocks.Game
 {
-    public class Grid<T> where T : class
+    public class Grid<T> : ICloneable where T : class
     {
+        private readonly Func<T> _defaultCell;
         public int Width { get; set; }
         public int Height { get; set; }
 
-        protected readonly List<List<T>> Storage;
+        protected List<List<T>> Storage;
 
-        public Grid(int width, int height)
+        public Grid(int width, int height, Func<T> defaultCell = null)
         {
+            _defaultCell = defaultCell ?? (() => null);
             Width = width;
             Height = height;
-
-            Storage = new List<List<T>>();
-            var yCells = Enumerable.Repeat((List<T>) null, height).ToList();
-            yCells.AddRange(Enumerable.Repeat((List<T>)null, height));
-            Storage.AddRange(yCells);
+            Storage = InitiliseStorage();
         }
+
+        public List<List<T>> RawRows => Storage;
 
         public T ValueAt(int x, int y)
         {
@@ -32,5 +32,32 @@ namespace WinBlocks.Game
             Storage[y][x] = val;
         }
 
+        public object Clone()
+        {
+            return new Grid<T>(Width, Height, _defaultCell)
+            {
+                Storage = InitiliseStorage(true)
+            };
+        }
+
+        protected List<List<T>> InitiliseStorage(bool copy = false)
+        {
+            var s = new List<List<T>>();
+            for (var y = 0; y < Height; y++)
+            {
+                var row = new List<T>();
+                for (var x = 0; x < Width; x++)
+                {
+                    var cell = _defaultCell();
+                    if (copy)
+                    {
+                        cell = ValueAt(x, y);
+                    }
+                    row.Add(cell);
+                }
+                s.Add(row);
+            }
+            return s;
+        }
     }
 }

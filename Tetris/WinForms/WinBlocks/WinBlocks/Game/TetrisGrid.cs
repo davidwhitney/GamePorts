@@ -1,18 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WinBlocks.Game.Rendering;
 
 namespace WinBlocks.Game
 {
-    public class TetrisGrid : Grid<RenderLocation>
+    public class TetrisGrid : Grid<RenderLocation>, ICloneable
     {
-        public TetrisGrid(int width, int height) : base(width, height)
+        public TetrisGrid(int width, int height) 
+            : base(width, height, () => new RenderLocation {Content = "."})
         {
         }
 
         public List<string> Rows
         {
-            get { return Storage.Select(row => string.Join<RenderLocation>("", row)).ToList(); }
+            get { return Storage.Select(row => string.Join("", row)).ToList(); }
             set
             {
                 Height = value.Count;
@@ -31,6 +33,14 @@ namespace WinBlocks.Game
                     Storage.Add(newRow);
                 }
             }
+        }
+
+        public new object Clone()
+        {
+            return new TetrisGrid(Width, Height)
+            {
+                Storage = InitiliseStorage(true)
+            };
         }
     }
 }

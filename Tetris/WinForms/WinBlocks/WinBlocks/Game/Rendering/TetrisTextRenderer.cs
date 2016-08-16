@@ -10,22 +10,26 @@ namespace WinBlocks.Game.Rendering
     {
         public List<IPostProcessContent> PostProcessors = new List<IPostProcessContent>();
 
-        public string Render(int width, int height, List<Tetrimino> contents)
+        public string Render(int width, int height, List<Tetrimino> contents, TetrisGrid board, Tetrimino c)
         {
-            var snapshot = new List<string>();
-            
-            var blocks = contents.SelectMany(x => x.BlockLocations).ToList();
+            var snapBoard = (TetrisGrid)board.Clone();
+            if (c != null)
+            {
+                foreach (var loc in c.BlockLocations)
+                {
+                    snapBoard.SetValue(loc.X, loc.Y, loc);
+                }
+            }
 
-            for (var y = 0; y < height; y++)
+            var snapshot = new List<string>();
+            foreach (var row in snapBoard.RawRows)
             {
                 var sbLine = new StringBuilder();
 
-                for (var x = 0; x < width; x++)
+                foreach (var item in row)
                 {
-                    var inLoc = blocks.SingleOrDefault(l => l.X == x && l.Y == y);
-                    var token = inLoc != null ? inLoc.Content : ".";
+                    var token = item?.Content ?? ".";
                     token = PostProcessors.Aggregate(token, (current, processors) => processors.Process(current));
-
                     sbLine.Append(token);
                 }
 

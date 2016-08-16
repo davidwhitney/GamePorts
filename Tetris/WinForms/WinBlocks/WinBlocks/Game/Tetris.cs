@@ -46,7 +46,7 @@ namespace WinBlocks.Game
                 toDraw.Add(Current);
             }
 
-            return _renderer.Render(Width, Height, toDraw);
+            return _renderer.Render(Width, Height, toDraw, _board, Current);
         }
 
         public void Step()
@@ -70,6 +70,12 @@ namespace WinBlocks.Game
         private void Lock()
         {
             BoardContents.Push(Current);
+
+            foreach (var location in Current.BlockLocations)
+            {
+                _board.SetValue(location.X, location.Y, location);
+            }
+
             Current = null;
         }
 
@@ -117,17 +123,18 @@ namespace WinBlocks.Game
 
         private bool CanMoveInto(int x, int y)
         {
-            if (y >= Rows.Count)
+            if (y >= Height)
             {
                 return false;
             }
 
-            if (x >= Rows[y].Length)
+            if (x >= Width)
             {
                 return false;
             }
 
-            return !OccupiedLocations.Any(el => el.X == x && el.Y == y);
+            var targetLocation = _board.ValueAt(x, y);
+            return targetLocation.Content == ".";
         }
 
         private Location EstablishTarget(Direction direction)
