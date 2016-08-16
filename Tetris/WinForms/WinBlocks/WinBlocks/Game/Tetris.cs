@@ -89,7 +89,7 @@ namespace WinBlocks.Game
                 return;
             }
 
-            var target = Current.Location.From(direction.ToDelta());
+            var target = Current.BoundingBoxLocation.From(direction.ToDelta());
             Current.ShiftTo(target.X, target.Y);
         }
 

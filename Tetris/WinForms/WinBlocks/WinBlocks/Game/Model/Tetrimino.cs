@@ -19,7 +19,7 @@ namespace WinBlocks.Game.Model
             private set { _pattern = value; BlockLocations = GenerateRenderLocations(); }
         }
 
-        public Location Location { get; private set; } = new Location();
+        public Location BoundingBoxLocation { get; private set; } = new Location();
 
         public List<RenderLocation> BlockLocations { get; private set; }
 
@@ -46,8 +46,8 @@ namespace WinBlocks.Game.Model
 
         public Tetrimino ShiftTo(int x, int y)
         {
-            Location.X = x;
-            Location.Y = y;
+            BoundingBoxLocation.X = x;
+            BoundingBoxLocation.Y = y;
             BlockLocations = GenerateRenderLocations();
             return this;
         }
@@ -68,7 +68,7 @@ namespace WinBlocks.Game.Model
 
             return new Tetrimino(nextMap)
             {
-                Location = Location
+                BoundingBoxLocation = BoundingBoxLocation
             };
         }
 
@@ -90,8 +90,8 @@ namespace WinBlocks.Game.Model
                     locs.Add(new RenderLocation
                     {
                         Content = c.ToString(),
-                        X = Location.X + x,
-                        Y = Location.Y + y
+                        X = BoundingBoxLocation.X + x,
+                        Y = BoundingBoxLocation.Y + y
                     });
                 }
             }
@@ -109,14 +109,14 @@ namespace WinBlocks.Game.Model
             return new Tetrimino(
                 Pattern,
                 RotationStates.ToArray(),
-                Location.X, Location.Y);
+                BoundingBoxLocation.X, BoundingBoxLocation.Y);
         }
 
         private bool Equals(Tetrimino other)
         {
             return string.Equals(Pattern, other.Pattern) 
-                && Location.Y == other.Location.Y 
-                && Location.X == other.Location.X;
+                && BoundingBoxLocation.Y == other.BoundingBoxLocation.Y 
+                && BoundingBoxLocation.X == other.BoundingBoxLocation.X;
         }
     }
 }
