@@ -102,15 +102,19 @@ C...".TrimStart()));
         [Test]
         public void Step_ActiveMultiLinePiece_MovesTogether()
         {
-            _sut.Current = new Tetrimino("A\r\nA", x: 0, y: 1);
+            _sut = NewGame(@"
+....
+C...
+C...
+....");
 
             _sut.Step();
 
             Assert.That(_sut.ToString(), Is.EqualTo(@"
 ....
 ....
-A...
-A...".TrimStart()));
+C...
+C...".TrimStart()));
         }
 
         [Test]
@@ -138,8 +142,8 @@ CA..".TrimStart()));
 ....
 .X..");
             
-            _sut.Step(); // Spawn new
-            _sut.Step();
+            _sut.Step(); // Spawns new
+            _sut.Step(); // Stays in place
 
             Assert.That(_sut.ToString(), Is.EqualTo(@"
 .A..
@@ -150,14 +154,13 @@ CA..".TrimStart()));
         public void Step_PiecesColide_CantStepPast()
         {
             _sut = NewGame(@"
-....
+.C..
 .X..");
             
-            _sut.Step(); // Spawn new
             _sut.Step();
 
             Assert.That(_sut.ToString(), Is.EqualTo(@"
-.A..
+.C..
 .X..".TrimStart()));
         }
 
@@ -197,7 +200,25 @@ AAA.");
 ....
 ....
 ....".Trim()));
+        }
 
+        [Test]
+        public void Step_BlockWouldCompleteTheLine_LinesDropDown()
+        {
+            _sut = NewGame(@"
+....
+....
+B..C
+AAA.");
+
+            _sut.Step();
+            _sut.Step(); // Line cleared as game "ticks"
+
+            Assert.That(_sut.ToString(), Is.EqualTo(@"
+....
+....
+....
+B...".Trim()));
         }
 
         private Tetris NewGame(string map = FourByFourBoard)

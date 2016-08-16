@@ -63,17 +63,27 @@ namespace WinBlocks.Game
 
         private void ClearAnyCompleteLines()
         {
-            foreach (var row in _board.RawRows)
+            var rowsToClear = new List<int>();
+
+            for (var y = _board.RawRows.Count -1; y >=0; y--)
             {
+                var row = _board.RawRows[y];
                 if (row.Any(x => x.Content == "."))
                 {
                     continue;
                 }
 
-                foreach (var cell in row)
-                {
-                    cell.Content = ".";
-                }
+                rowsToClear.Add(y);
+            }
+
+            foreach (var y in rowsToClear)
+            {
+                _board.RawRows.RemoveAt(y);
+            }
+
+            for (int newRowCount = 0; newRowCount < rowsToClear.Count; newRowCount++)
+            {
+                _board.RawRows.Insert(0, _board.CreateRow());
             }
         }
 

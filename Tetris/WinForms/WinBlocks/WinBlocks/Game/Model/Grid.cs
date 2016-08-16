@@ -69,19 +69,25 @@ namespace WinBlocks.Game.Model
             var s = new List<List<T>>();
             for (var y = 0; y < Height; y++)
             {
-                var row = new List<T>();
-                for (var x = 0; x < Width; x++)
-                {
-                    var cell = _defaultCell();
-                    if (copy)
-                    {
-                        cell = ValueAt(x, y);
-                    }
-                    row.Add(cell);
-                }
+                var row = CreateRow(y, copy);
                 s.Add(row);
             }
             return s;
+        }
+
+        public List<T> CreateRow(int y = 0, bool copy = false)
+        {
+            var row = new List<T>();
+            for (var x = 0; x < Width; x++)
+            {
+                var cell = _defaultCell();
+                if (copy)
+                {
+                    cell = ValueAt(x, y);
+                }
+                row.Add(cell);
+            }
+            return row;
         }
     }
 }
