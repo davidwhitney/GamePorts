@@ -13,7 +13,7 @@ namespace WinBlocks.Tests
             var boardMap = new List<string>(lines);
             
             var leftMost = int.MaxValue;
-            var topMost = 0;
+            var topMost = int.MaxValue;
             var shapeLines = new List<string>();
 
             for (var y = 0; y < boardMap.Count; y++)
@@ -27,7 +27,7 @@ namespace WinBlocks.Tests
                     if (letter == 'C')
                     {
                         leftMost = x < leftMost ? x : leftMost;
-                        topMost = y > topMost ? y : topMost;
+                        topMost = y < topMost ? y : topMost;
                         shapeRow += letter;
 
                         row = row.Insert(x, ".");
