@@ -1,3 +1,5 @@
+using WinBlocks.Game.Model;
+
 namespace WinBlocks.Game.Rendering
 {
     public class RenderLocation : Location

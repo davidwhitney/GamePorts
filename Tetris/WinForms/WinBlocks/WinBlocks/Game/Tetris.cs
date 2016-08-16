@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using WinBlocks.Game.BlockSelection;
 using WinBlocks.Game.Input;
@@ -19,13 +18,9 @@ namespace WinBlocks.Game
         public Tetrimino Current { get; set; }
         public List<IPostProcessContent> PostProcessors => _renderer.PostProcessors;
 
-        public int Height => _board.Height;
-        public int Width => _board.Width;
-
         private readonly ISelectBlocks _selector;
         private readonly TetrisTextRenderer _renderer;
         private readonly TetrisGrid _board;
-        
 
         public Tetris(ISelectBlocks selector)
         {
@@ -36,13 +31,7 @@ namespace WinBlocks.Game
 
         public override string ToString()
         {
-            var toDraw = new List<Tetrimino>();
-            if (Current != null)
-            {
-                toDraw.Add(Current);
-            }
-
-            return _renderer.Render(Width, Height, toDraw, _board, Current);
+            return _renderer.Render(_board, Current);
         }
 
         public void Step()
@@ -53,8 +42,7 @@ namespace WinBlocks.Game
                 return;
             }
 
-            var downwardsMovement = new Delta { Y = +1 };
-            if (!AllBlocksInTetriminoCanMove(Current, downwardsMovement))
+            if (!CanMoveInto(Current, new Delta { Y = +1 }))
             {
                 Lock();
                 ClearAnyCompleteLines();
@@ -96,7 +84,7 @@ namespace WinBlocks.Game
                 return;
             }
 
-            if (!AllBlocksInTetriminoCanMove(Current, direction.ToDelta()))
+            if (!CanMoveInto(Current, direction.ToDelta()))
             {
                 return;
             }
@@ -110,63 +98,13 @@ namespace WinBlocks.Game
             Current?.Rotate(direction);
         }
 
-        private bool AllBlocksInTetriminoCanMove(Tetrimino t, Delta delta)
+        private bool CanMoveInto(Tetrimino t, Delta delta)
         {
-            return t.BlockLocations.All(loc => CanMoveInto(loc.From(delta)));
-        }
-
-        // BUG: This needs to check each individual piece.
-        private bool CanMoveInto(Location loc)
-        {
-            return CanMoveInto(loc.X, loc.Y);
-        }
-
-        private bool CanMoveInto(int x, int y)
-        {
-            if (x < 0 || y < 0)
+            return t.BlockLocations.All(loc =>
             {
-                return false;
-            }
-
-            if (y >= Height)
-            {
-                return false;
-            }
-
-            if (x >= Width)
-            {
-                return false;
-            }
-
-            var targetLocation = _board.ValueAt(x, y);
-            return targetLocation.Content == ".";
-        }
-    }
-
-    public class Delta : Location { }
-
-    public static class MovementExtensions
-    {
-        public static Delta ToDelta(this Direction direction)
-        {
-            var delta = new Delta();
-
-            if (direction == Direction.Right)
-            {
-                delta.X = 1;
-            }
-
-            if (direction == Direction.Left)
-            {
-                delta.X = -1;
-            }
-
-            if (direction == Direction.Down)
-            {
-                delta.Y = 1;
-            }
-
-            return delta;
+                var location = loc.From(delta);
+                return _board.IsOccupied(location.X, location.Y);
+            });
         }
     }
 }

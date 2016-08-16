@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-namespace WinBlocks.Game
+namespace WinBlocks.Game.Model
 {
     public class Grid<T> : ICloneable where T : class
     {
@@ -21,7 +20,7 @@ namespace WinBlocks.Game
         }
 
         public List<List<T>> RawRows => Storage;
-
+        
         public T ValueAt(int x, int y)
         {
             if (x < 0 || y < 0 || x > Width || y > Height)
@@ -30,6 +29,26 @@ namespace WinBlocks.Game
             }
 
             return Storage[y][x];
+        }
+
+        public virtual bool IsOccupied(int x, int y)
+        {
+            if (x < 0 || y < 0)
+            {
+                return false;
+            }
+
+            if (y >= Height)
+            {
+                return false;
+            }
+
+            if (x >= Width)
+            {
+                return false;
+            }
+
+            return Storage[y][x] != null;
         }
 
         public void SetValue(int x, int y, T val)

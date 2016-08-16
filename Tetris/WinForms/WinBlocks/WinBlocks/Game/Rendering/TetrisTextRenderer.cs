@@ -10,12 +10,12 @@ namespace WinBlocks.Game.Rendering
     {
         public List<IPostProcessContent> PostProcessors = new List<IPostProcessContent>();
 
-        public string Render(int width, int height, List<Tetrimino> contents, TetrisGrid board, Tetrimino c)
+        public string Render(TetrisGrid board, Tetrimino activePiece)
         {
             var snapBoard = (TetrisGrid)board.Clone();
-            if (c != null)
+            if (activePiece != null)
             {
-                foreach (var loc in c.BlockLocations)
+                foreach (var loc in activePiece.BlockLocations)
                 {
                     snapBoard.SetValue(loc.X, loc.Y, loc);
                 }

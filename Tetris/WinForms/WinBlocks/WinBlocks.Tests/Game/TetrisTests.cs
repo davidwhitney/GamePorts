@@ -27,15 +27,6 @@ namespace WinBlocks.Tests.Game
         }
 
         [Test]
-        public void Ctor_ProvidesEmptyBoard()
-        {
-            _sut = new Tetris(_selector.Object);
-
-            Assert.That(_sut.Width, Is.EqualTo(10));
-            Assert.That(_sut.Height, Is.EqualTo(22));
-        }
-
-        [Test]
         public void Step_EmptyBoard_AddsRandomlySelectedBlockToBoard()
         {
             NextSpawnIs(new Tetrimino("A", x: 1));
@@ -108,11 +99,7 @@ A...".TrimStart()));
         [Test]
         public void Step_ActiveMultiLinePiece_MovesTogether()
         {
-            _sut = NewGame(@"
-....
-A...
-A...
-....");
+            _sut.Current = new Tetrimino("A\r\nA", x: 0, y: 1);
 
             _sut.Step();
 

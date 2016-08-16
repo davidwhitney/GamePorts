@@ -8,6 +8,8 @@ namespace WinBlocks.Game.Model
 {
     public class Tetrimino : ICloneable
     {
+        private const char EmptySpace = '.';
+
         public string Id { get; }
 
         private string _pattern;
@@ -31,7 +33,7 @@ namespace WinBlocks.Game.Model
             Pattern = pattern;
             ShiftTo(x, y);
 
-            Id = Pattern.First(c => c != '.' && c != '\r' && c != '\n').ToString();
+            Id = Pattern.First(c => c != EmptySpace && c != '\r' && c != '\n').ToString();
             RotationStates = new List<string> {Pattern};
 
             if (rotationStates != null)
@@ -81,7 +83,7 @@ namespace WinBlocks.Game.Model
                 for (var x = 0; x < row.Length; x++)
                 {
                     var c = row[x];
-                    if (c == '.')
+                    if (c == EmptySpace)
                     {
                         continue;
                     }
