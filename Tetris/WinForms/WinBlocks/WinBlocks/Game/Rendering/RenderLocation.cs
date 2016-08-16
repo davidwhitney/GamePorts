@@ -16,6 +16,11 @@ namespace WinBlocks.Game.Rendering
         {
         }
 
+        public override string ToString()
+        {
+            return Content;
+        }
+
         public override bool Equals(object obj)
         {
             return Equals(obj as RenderLocation);

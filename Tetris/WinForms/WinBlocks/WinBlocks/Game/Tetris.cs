@@ -10,17 +10,23 @@ namespace WinBlocks.Game
 {
     public class Tetris
     {
-        public List<string> Rows { get; set; }
+        public List<string> Rows
+        {
+            get { return _board.Rows; }
+            set { _board.Rows = value; }
+        }
+
         public Tetrimino Current { get; set; }
         public Stack<Tetrimino> BoardContents { get; } = new Stack<Tetrimino>();
         public IEnumerable<RenderLocation> OccupiedLocations => BoardContents.SelectMany(x => x.BlockLocations).ToList();
         public List<IPostProcessContent> PostProcessors => _renderer.PostProcessors;
 
-        public int Height => Rows.Count;
-        public int Width => Rows.First().Length;
+        public int Height => _board.Height;
+        public int Width => _board.Width;
 
         private readonly ISelectBlocks _selector;
         private readonly TetrisTextRenderer _renderer;
+        private readonly TetrisGrid _board;
 
         public static string EmptyBoard => string.Join(Environment.NewLine, BoardRows);
         private static List<string> BoardRows => new List<string>(Enumerable.Repeat("..........", 22));
@@ -29,7 +35,7 @@ namespace WinBlocks.Game
         {
             _selector = selector;
             _renderer = new TetrisTextRenderer();
-            Rows = BoardRows;
+            _board = new TetrisGrid(10, 22);
         }
 
         public override string ToString()
@@ -53,14 +59,18 @@ namespace WinBlocks.Game
 
             if (!Current.BlockLocations.All(loc => CanMoveInto(loc.X, loc.Y + 1)))
             {
-                BoardContents.Push(Current);
-                Current = null;
-
+                Lock();
                 ClearAnyCompleteLines();
                 return;
             }
 
             Move(Direction.Down);
+        }
+
+        private void Lock()
+        {
+            BoardContents.Push(Current);
+            Current = null;
         }
 
         private void ClearAnyCompleteLines()
@@ -78,7 +88,7 @@ namespace WinBlocks.Game
                 {
                     foreach (var tet in BoardContents)
                     {
-                        tet.BlockLocations.RemoveAll(l => tet.BlockLocations.Where(location => location == block).ToList().Contains(l));
+                        tet.BlockLocations.RemoveAll(l => tet.BlockLocations.Where(location => location.Equals(block)).ToList().Contains(l));
                     }
                 }
             }

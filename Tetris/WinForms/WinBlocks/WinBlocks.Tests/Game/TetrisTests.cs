@@ -233,11 +233,9 @@ LLL.", lockPieces: true);
         private Tetris NewGame(string map = FourByFourBoard, bool lockPieces = false)
         {
             var state = new BoardBuilderForTests().Populate(map);
-            var t = new Tetris(_selector.Object)
-            {
-                Rows = state.Item1,
-                Current = state.Item2
-            };
+            var t = new Tetris(_selector.Object);
+            t.Rows = state.Item1;
+            t.Current = state.Item2;
 
             if (lockPieces)
             {
