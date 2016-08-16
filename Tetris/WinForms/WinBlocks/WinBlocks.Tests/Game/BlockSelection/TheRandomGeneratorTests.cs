@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NUnit.Framework;
 using WinBlocks.Game.BlockSelection;
 using WinBlocks.Game.Model;
-using WinBlocks.Tests.Game.Model;
 
 namespace WinBlocks.Tests.Game.BlockSelection
 {
