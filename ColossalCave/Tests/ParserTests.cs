@@ -100,6 +100,26 @@ namespace Tests
             Assert.That(gameWorld.Locations.First().Value.ShortForm, Is.EqualTo("Short form"));
         }
 
+        [Test]
+        public void Parse_DirectionsPresent_AssignsThemToLocations()
+        {
+            FileDataIs("1	A" + Rn +
+                       "2	B" + Rn +
+                       "-1" + Rn +
+                       "1	A" + Rn +
+                       "-1" + Rn +
+                       "1	2	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Paths[0].LocationId, Is.EqualTo(2));
+            Assert.That(locationDescription.Paths[0].Action[0], Is.EqualTo("1"));
+            Assert.That(locationDescription.Paths[0].Action[1], Is.EqualTo("2"));
+            Assert.That(locationDescription.Paths[0].Action[2], Is.EqualTo("3"));
+        }
+
         private void FileDataIs(string contents)
         {
             _mockFileData = new MockFileData(contents);

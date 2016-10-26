@@ -41,7 +41,7 @@ namespace ConsoleApplication1
 
                 if (!targetDictionary.ContainsKey(pair.Value.Key))
                 {
-                    targetDictionary.Add(pair.Value.Key, new LocationDescription());
+                    targetDictionary.Add(pair.Value.Key, new Location(pair.Value.Key));
                 }
 
                 targetDictionary[pair.Value.Key].Add(pair.Value.Value);

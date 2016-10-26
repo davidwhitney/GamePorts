@@ -35,7 +35,7 @@ namespace ConsoleApplication1
             foreach (var key in allKeys)
             {
                 var value = longForms[key];
-                adventure.Locations.Add(key, new LocationDescription());
+                adventure.Locations.Add(key, new Location(key));
                 adventure.Locations[key].AddRange(value);
 
                 if (shortForms.ContainsKey(key))
@@ -43,42 +43,23 @@ namespace ConsoleApplication1
                     adventure.Locations[key].ShortForm = shortForms[key].ToString();
                 }
             }
-          
-            return adventure;
-        }
 
-        public KeyValuePair<int, string>? Unpack(string line)
-        {
-            var keyValue = line.Split('\t');
-
-            int locationId;
-            var locationIdAsString = keyValue[0];
-            var foundInteger = int.TryParse(locationIdAsString, out locationId);
-            if (!foundInteger)
+            var locationMap = chunks.Count > 2 ? chunks.Skip(2).First() : new List<string>();
+            foreach (var line in locationMap)
             {
-                return null;
+                var pathData = new Queue<int>(line.Split('\t').Select(int.Parse));
+                var thisLocation = adventure.Locations[pathData.Dequeue()];
+                var pathRecord = new LocationRefs {LocationId = pathData.Dequeue()};
+
+                while (pathData.Any())
+                {
+                    pathRecord.Action.Add(pathData.Dequeue().ToString());
+                }
+                
+                thisLocation.Paths.Add(pathRecord);
             }
-            var textString = keyValue.Length == 1 ? "" : keyValue[1];
-            return new KeyValuePair<int, string>(locationId, textString);
-        }
 
-       
-    }
-
-    public class Adventure
-    {
-        public int RawLength { get; set; }
-        public Dictionary<int, LocationDescription> Locations { get; set; } = new Dictionary<int, LocationDescription>();
-        
-    }
-
-    public class LocationDescription : List<string>
-    {
-        public string ShortForm { get; set; }
-
-        public override string ToString()
-        {
-            return string.Join(Environment.NewLine, this);
+            return adventure;
         }
     }
 }
