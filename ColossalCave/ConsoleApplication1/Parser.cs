@@ -27,35 +27,23 @@ namespace ConsoleApplication1
                 RawLength = lines.Length
             };
 
-            var chunks = SplitDataIntoChunks(lines);
-            var longForms = chunks.First();
-            foreach (var description in longForms)
-            {
-                var pair = Unpack(description);
-                if (!pair.HasValue) continue;
+            var chunks = lines.SplitDataIntoChunks();
+            var longForms = chunks.First().ToDictionary();
+            var shortForms = (chunks.Count > 1 ? chunks.Skip(1).First() : new List<string>()).ToDictionary();
 
-                if (!adventure.Locations.ContainsKey(pair.Value.Key))
+            var allKeys = longForms.Keys;
+            foreach (var key in allKeys)
+            {
+                var value = longForms[key];
+                adventure.Locations.Add(key, new LocationDescription());
+                adventure.Locations[key].AddRange(value);
+
+                if (shortForms.ContainsKey(key))
                 {
-                    adventure.Locations.Add(pair.Value.Key, new LocationDescription());
+                    adventure.Locations[key].ShortForm = shortForms[key].ToString();
                 }
-                
-                adventure.Locations[pair.Value.Key].Add(pair.Value.Value);
             }
-
-            if (chunks.Count < 2)
-            {
-                return adventure;
-            }
-
-            var shortForms = chunks.Skip(1).First();
-            foreach (var description in shortForms)
-            {
-                var pair = Unpack(description);
-                if (!pair.HasValue) continue;
-
-                adventure.Locations[pair.Value.Key].ShortForm = pair.Value.Value;
-            }
-
+          
             return adventure;
         }
 
@@ -74,31 +62,7 @@ namespace ConsoleApplication1
             return new KeyValuePair<int, string>(locationId, textString);
         }
 
-        private static List<List<string>> SplitDataIntoChunks(IEnumerable<string> lines)
-        {
-            var chunks = new List<List<string>>();
-            var currentBlock = new List<string>();
-            foreach (var line in lines)
-            {
-                if (line == "-1")
-                {
-                    chunks.Add(currentBlock);
-                    currentBlock = new List<string>();
-                }
-                else
-                {
-                    currentBlock.Add(line);
-                }
-            }
-
-            if (currentBlock.Any() 
-                && !chunks.Contains(currentBlock))
-            {
-                chunks.Add(currentBlock);
-            }
-
-            return chunks;
-        }
+       
     }
 
     public class Adventure
