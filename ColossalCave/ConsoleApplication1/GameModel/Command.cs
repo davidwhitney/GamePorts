@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace ConsoleApplication1
+namespace ConsoleApplication1.GameModel
 {
-    public class LocationRefs
+    public class Command
     {
-        public int LocationId { get; set; }
+        public int TargetId { get; set; }
         public List<string> Action { get; set; } = new List<string>();
     }
 }

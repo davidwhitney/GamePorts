@@ -6,6 +6,8 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text;
 using ConsoleApplication1;
+using ConsoleApplication1.GameModel;
+using ConsoleApplication1.Parsing;
 using NUnit.Framework;
 
 namespace Tests
@@ -18,6 +20,14 @@ namespace Tests
         private MockFileData _mockFileData;
         private const string AdvenDat = @"C:\dev\GamePorts\ColossalCave\ConsoleApplication1\adven.dat";
         private const string Rn = "\r\n";
+
+        private static string FirstAndSecondSection => "1	Long form" + Rn +
+                                                       "-1" + Rn +
+                                                       "1	Short form" + Rn +
+                                                       "-1" + Rn;
+
+        private static string SimpleLocationMap => "1	2	1	2	3";
+
 
         [SetUp]
         public void SetUp()
@@ -92,8 +102,7 @@ namespace Tests
             FileDataIs("1	Long form" + Rn +
                        "-1" + Rn +
                        "1	Short form" + Rn +
-                       "-1" + Rn +
-                       "1	2	2	44	29");
+                       "-1" + Rn + SimpleLocationMap);
 
             var gameWorld = _parser.Parse(AdvenDat);
 
@@ -103,21 +112,60 @@ namespace Tests
         [Test]
         public void Parse_DirectionsPresent_AssignsThemToLocations()
         {
-            FileDataIs("1	A" + Rn +
-                       "2	B" + Rn +
-                       "-1" + Rn +
-                       "1	A" + Rn +
-                       "-1" + Rn +
+            FileDataIs(FirstAndSecondSection +
                        "1	2	1	2	3");
                       //loc, dest, verb, verb, verb
 
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
 
-            Assert.That(locationDescription.Paths[0].LocationId, Is.EqualTo(2));
+            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(2));
             Assert.That(locationDescription.Paths[0].Action[0], Is.EqualTo("1"));
             Assert.That(locationDescription.Paths[0].Action[1], Is.EqualTo("2"));
             Assert.That(locationDescription.Paths[0].Action[2], Is.EqualTo("3"));
+        }
+
+        [TestCase(1)]
+        [TestCase(300)]
+        public void Parse_TargetIdLessThan300_AssignedToLocation(int targetLocationId)
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	{targetLocationId}	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(targetLocationId));
+            Assert.That(locationDescription.Paths[0], Is.TypeOf<Navigate>());
+        }
+
+        [Test]
+        public void Parse_TargetIdGreaterThan300ButLessThan500_IsAJump()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	301	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(1));
+            Assert.That(locationDescription.Paths[0], Is.TypeOf<GoTo>());
+        }
+
+        [Test]
+        public void Parse_TargetIdGreaterThan500_IsAMessage()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	501	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(1));
+            Assert.That(locationDescription.Paths[0], Is.TypeOf<Message>());
         }
 
         private void FileDataIs(string contents)
