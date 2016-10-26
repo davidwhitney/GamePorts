@@ -1,12 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using ConsoleApplication1;
 using ConsoleApplication1.GameModel;
+using ConsoleApplication1.GameModel.Actions;
 using ConsoleApplication1.Parsing;
 using NUnit.Framework;
 
@@ -119,10 +120,10 @@ namespace Tests
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
 
-            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(2));
-            Assert.That(locationDescription.Paths[0].Action[0], Is.EqualTo("1"));
-            Assert.That(locationDescription.Paths[0].Action[1], Is.EqualTo("2"));
-            Assert.That(locationDescription.Paths[0].Action[2], Is.EqualTo("3"));
+            Assert.That(locationDescription.Actions[0].TargetId, Is.EqualTo(2));
+            Assert.That(locationDescription.Actions[0].Triggers[0], Is.EqualTo("1"));
+            Assert.That(locationDescription.Actions[0].Triggers[1], Is.EqualTo("2"));
+            Assert.That(locationDescription.Actions[0].Triggers[2], Is.EqualTo("3"));
         }
 
         [TestCase(1)]
@@ -136,8 +137,8 @@ namespace Tests
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
 
-            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(targetLocationId));
-            Assert.That(locationDescription.Paths[0], Is.TypeOf<Navigate>());
+            Assert.That(locationDescription.Actions[0].TargetId, Is.EqualTo(targetLocationId));
+            Assert.That(locationDescription.Actions[0], Is.TypeOf<Navigate>());
         }
 
         [Test]
@@ -150,8 +151,8 @@ namespace Tests
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
 
-            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(1));
-            Assert.That(locationDescription.Paths[0], Is.TypeOf<GoTo>());
+            Assert.That(locationDescription.Actions[0].TargetId, Is.EqualTo(1));
+            Assert.That(locationDescription.Actions[0], Is.TypeOf<GoTo>());
         }
 
         [Test]
@@ -164,8 +165,76 @@ namespace Tests
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
 
-            Assert.That(locationDescription.Paths[0].TargetId, Is.EqualTo(1));
-            Assert.That(locationDescription.Paths[0], Is.TypeOf<Message>());
+            Assert.That(locationDescription.Actions[0].TargetId, Is.EqualTo(1));
+            Assert.That(locationDescription.Actions[0], Is.TypeOf<Message>());
+        }
+
+        [Test]
+        public void Parse_DestinationDivisibleByOneThousand_NoContraints()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	501	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<NavigateAction>());
+        }
+
+        [Test]
+        public void Parse_DestinationDividedBy1000Between0And100_ProbabilityConstraint()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	50005	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<ProbabilityAction>());
+            Assert.That(((ProbabilityAction)locationDescription.Actions[0].Action).Percentage, Is.EqualTo(50));
+        }
+
+        [Test]
+        public void Parse_DestinationDividedBy1000is100_ForbiddenToDwarfs()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	100000	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<ForbiddenToDwarfs>());
+        }
+
+        [Test]
+        public void Parse_DestinationDividedBy1000Between100And200_InventoryConstraint()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	110000	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<InventoryAction>());
+            Assert.That(((InventoryAction)locationDescription.Actions[0].Action).ItemId, Is.EqualTo(110));
+        }
+
+        [Test]
+        public void Parse_DestinationDividedBy1000Between200And300_PresentConstraint()
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	201000	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+
+            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<ItemOrRoomPresentAction>());
+            Assert.That(((ItemOrRoomPresentAction)locationDescription.Actions[0].Action).ItemId, Is.EqualTo(201));
         }
 
         private void FileDataIs(string contents)

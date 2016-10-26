@@ -50,6 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GameModel\Adventure.cs" />
+    <Compile Include="GameModel\Actions\Action.cs" />
+    <Compile Include="GameModel\Actions\ForbiddenToDwarfs.cs" />
+    <Compile Include="GameModel\Actions\InventoryAction.cs" />
+    <Compile Include="GameModel\Actions\NavigateAction.cs" />
+    <Compile Include="GameModel\Actions\ItemOrRoomPresentAction.cs" />
+    <Compile Include="GameModel\Actions\ProbabilityAction.cs" />
     <Compile Include="Parsing\ChunkerExtensions.cs" />
     <Compile Include="GameModel\GoTo.cs" />
     <Compile Include="GameModel\Location.cs" />

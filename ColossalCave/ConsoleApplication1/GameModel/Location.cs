@@ -7,7 +7,7 @@ namespace ConsoleApplication1.GameModel
     {
         public int Id { get; set; }
         public string ShortForm { get; set; }
-        public List<Command> Paths { get; set; } = new List<Command>();
+        public List<Command> Actions { get; set; } = new List<Command>();
 
         public Location(int id)
         {
@@ -17,6 +17,12 @@ namespace ConsoleApplication1.GameModel
         public override string ToString()
         {
             return string.Join(Environment.NewLine, this);
+        }
+
+        public Location WithActions(Action<List<Command>> actions)
+        {
+            actions(Actions);
+            return this;
         }
     }
 }

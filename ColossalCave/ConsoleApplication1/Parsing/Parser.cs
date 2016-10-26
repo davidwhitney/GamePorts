@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Linq;
 using ConsoleApplication1.GameModel;
+using ConsoleApplication1.GameModel.Actions;
+using Action = ConsoleApplication1.GameModel.Actions.Action;
 
 namespace ConsoleApplication1.Parsing
 {
@@ -60,17 +62,53 @@ namespace ConsoleApplication1.Parsing
 
                 var secondValue = pathData.Dequeue();
                 var targetId = secondValue%1000;
-                var motionConditions = secondValue/1000;
+                var motionConditions = secondValue / 1000;
 
                 var pathRecord = CreateCommand(targetId, secondValue);
+                var constraint = ConstrainMovementOptions(motionConditions);
+
+                pathRecord.Action = constraint;
 
                 while (pathData.Any())
                 {
-                    pathRecord.Action.Add(pathData.Dequeue().ToString());
+                    pathRecord.Triggers.Add(pathData.Dequeue().ToString());
                 }
 
-                thisLocation.Paths.Add(pathRecord);
+                thisLocation.Actions.Add(pathRecord);
             }
+        }
+
+        private static Action ConstrainMovementOptions(int motionConditions)
+        {
+            Action action = null;
+            if (motionConditions == 0)
+            {
+                action = new NavigateAction();
+            }
+
+            if (motionConditions > 0
+                && motionConditions < 100)
+            {
+                action = new ProbabilityAction {Percentage = motionConditions};
+            }
+
+            if (motionConditions == 100)
+            {
+                action = new ForbiddenToDwarfs();
+            }
+
+            if (motionConditions > 100
+                && motionConditions < 200)
+            {
+                action = new InventoryAction {ItemId = motionConditions};
+            }
+
+            if (motionConditions > 200
+                && motionConditions < 300)
+            {
+                action = new ItemOrRoomPresentAction {ItemId = motionConditions};
+            }
+            return action;
         }
 
         private static Command CreateCommand(int targetId, int secondValue)
