@@ -12,7 +12,8 @@ namespace ConsoleApplication1.Parsing
             var currentBlock = new List<string>();
             foreach (var line in lines)
             {
-                if (line == "-1")
+                if (line == "-1"
+                    || line == "-1\tEND")
                 {
                     chunks.Add(currentBlock);
                     currentBlock = new List<string>();
@@ -27,6 +28,14 @@ namespace ConsoleApplication1.Parsing
                 && !chunks.Contains(currentBlock))
             {
                 chunks.Add(currentBlock);
+            }
+
+            foreach(var chunk in chunks)
+            {
+                if(chunk.First().Trim().Length == 1)
+                {
+                    chunk.Remove(chunk.First());
+                }
             }
 
             return chunks;

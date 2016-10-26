@@ -60,7 +60,7 @@ namespace ConsoleApplication1.Parsing
                 var pathData = new Queue<int>(line.Split('\t').Select(int.Parse));
                 var thisLocation = adventure.Locations[pathData.Dequeue()];
 
-                var secondValue = pathData.Dequeue();
+                var secondValue = pathData.Count > 0 ? pathData.Dequeue() : thisLocation.Id;
                 var targetId = secondValue%1000;
                 var motionConditions = secondValue / 1000;
 

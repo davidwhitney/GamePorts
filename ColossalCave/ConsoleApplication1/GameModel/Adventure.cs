@@ -9,6 +9,8 @@ namespace ConsoleApplication1.GameModel
         public Dictionary<int, Location> Locations { get; set; } = new Dictionary<int, Location>();
 
         public int CurrentLocation { get; set; }
+        public string CurrentLocationText => Locations[CurrentLocation].ToString();
+
         public List<int> InventoryItems { get; set; }
 
         public Adventure StartGame()
@@ -30,7 +32,7 @@ namespace ConsoleApplication1.GameModel
 
             var successfulAction = matchingActions.FirstOrDefault(x => x.Action.Invoke(this, x));
 
-            return new List<string>();
+            return new List<string> { CurrentLocationText };
         }
     }
 }
