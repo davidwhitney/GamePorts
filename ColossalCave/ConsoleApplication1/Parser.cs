@@ -36,16 +36,15 @@ namespace ConsoleApplication1
                 int locationId;
                 var locationIdAsString = keyValue[0];
                 var foundInteger = int.TryParse(locationIdAsString, out locationId);
-
                 if (!foundInteger) continue;
 
-                if (keyValue.Length == 1)
+                if (!adventure.LongFormDescriptions.ContainsKey(locationId))
                 {
-                    adventure.LongFormDescriptions.Add(locationId, new LocationDescription {""});
+                    adventure.LongFormDescriptions.Add(locationId, new LocationDescription());
                 }
 
-                var textString = keyValue[1];
-                adventure.LongFormDescriptions.Add(locationId, new LocationDescription {textString});
+                var textString = keyValue.Length == 1 ? "" : keyValue[1];
+                adventure.LongFormDescriptions[locationId].Add(textString);
             }
 
             return adventure;

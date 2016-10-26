@@ -59,6 +59,22 @@ namespace Tests
             Assert.That(gameWorld.LongFormDescriptions.First().Value.ToString(), Is.EqualTo("YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK BUILDING."));
         }
 
+        [Test]
+        public void Parse_GivenLongFormDescriptionsSpanningManyLines_Detects()
+        {
+            FileDataIs("1	PREAMBLE." + Rn +
+                       "1	POSTAMBLE." + Rn +
+                       "-1" + Rn +
+                       "1	YOU'RE AT END OF ROAD AGAIN." + Rn +
+                       "-1" + Rn +
+                       "1	2	2	44	29");
+
+            var gameWorld = _parser.Parse(AdvenDat);
+
+            Assert.That(gameWorld.LongFormDescriptions.Count, Is.EqualTo(1));
+            Assert.That(gameWorld.LongFormDescriptions.First().Value.ToString(), Is.EqualTo("PREAMBLE.\r\nPOSTAMBLE."));
+        }
+
         private void FileDataIs(string contents)
         {
             _mockFileData = new MockFileData(contents);
