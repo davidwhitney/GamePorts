@@ -31,23 +31,47 @@ namespace ConsoleApplication1
             var longForms = chunks.First();
             foreach (var description in longForms)
             {
-                var keyValue = description.Split('\t');
+                var pair = Unpack(description);
+                if (!pair.HasValue) continue;
 
-                int locationId;
-                var locationIdAsString = keyValue[0];
-                var foundInteger = int.TryParse(locationIdAsString, out locationId);
-                if (!foundInteger) continue;
-
-                if (!adventure.LongFormDescriptions.ContainsKey(locationId))
+                if (!adventure.Locations.ContainsKey(pair.Value.Key))
                 {
-                    adventure.LongFormDescriptions.Add(locationId, new LocationDescription());
+                    adventure.Locations.Add(pair.Value.Key, new LocationDescription());
                 }
+                
+                adventure.Locations[pair.Value.Key].Add(pair.Value.Value);
+            }
 
-                var textString = keyValue.Length == 1 ? "" : keyValue[1];
-                adventure.LongFormDescriptions[locationId].Add(textString);
+            if (chunks.Count < 2)
+            {
+                return adventure;
+            }
+
+            var shortForms = chunks.Skip(1).First();
+            foreach (var description in shortForms)
+            {
+                var pair = Unpack(description);
+                if (!pair.HasValue) continue;
+
+                adventure.Locations[pair.Value.Key].ShortForm = pair.Value.Value;
             }
 
             return adventure;
+        }
+
+        public KeyValuePair<int, string>? Unpack(string line)
+        {
+            var keyValue = line.Split('\t');
+
+            int locationId;
+            var locationIdAsString = keyValue[0];
+            var foundInteger = int.TryParse(locationIdAsString, out locationId);
+            if (!foundInteger)
+            {
+                return null;
+            }
+            var textString = keyValue.Length == 1 ? "" : keyValue[1];
+            return new KeyValuePair<int, string>(locationId, textString);
         }
 
         private static List<List<string>> SplitDataIntoChunks(IEnumerable<string> lines)
@@ -61,7 +85,10 @@ namespace ConsoleApplication1
                     chunks.Add(currentBlock);
                     currentBlock = new List<string>();
                 }
-                currentBlock.Add(line);
+                else
+                {
+                    currentBlock.Add(line);
+                }
             }
 
             if (currentBlock.Any() 
@@ -77,12 +104,14 @@ namespace ConsoleApplication1
     public class Adventure
     {
         public int RawLength { get; set; }
-        public Dictionary<int, LocationDescription> LongFormDescriptions { get; set; } = new Dictionary<int, LocationDescription>();
+        public Dictionary<int, LocationDescription> Locations { get; set; } = new Dictionary<int, LocationDescription>();
         
     }
 
     public class LocationDescription : List<string>
     {
+        public string ShortForm { get; set; }
+
         public override string ToString()
         {
             return string.Join(Environment.NewLine, this);

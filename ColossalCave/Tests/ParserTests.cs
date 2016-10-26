@@ -45,6 +45,17 @@ namespace Tests
         }
 
         [Test]
+        public void Parse_ProvidedFile_DividerNotPresentInChunks()
+        {
+            FileDataIs("1	Blah." + Rn +
+                       "-1");
+
+            var gameWorld = _parser.Parse(AdvenDat);
+
+            Assert.That(gameWorld.Locations.Count, Is.EqualTo(1));
+        }
+
+        [Test]
         public void Parse_GivenLongFormDescriptions_Detects()
         {
             FileDataIs(@"1	YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK BUILDING." + Rn +
@@ -55,8 +66,8 @@ namespace Tests
 
             var gameWorld = _parser.Parse(AdvenDat);
 
-            Assert.That(gameWorld.LongFormDescriptions.Count, Is.EqualTo(1));
-            Assert.That(gameWorld.LongFormDescriptions.First().Value.ToString(), Is.EqualTo("YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK BUILDING."));
+            Assert.That(gameWorld.Locations.Count, Is.EqualTo(1));
+            Assert.That(gameWorld.Locations.First().Value.ToString(), Is.EqualTo("YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK BUILDING."));
         }
 
         [Test]
@@ -71,8 +82,22 @@ namespace Tests
 
             var gameWorld = _parser.Parse(AdvenDat);
 
-            Assert.That(gameWorld.LongFormDescriptions.Count, Is.EqualTo(1));
-            Assert.That(gameWorld.LongFormDescriptions.First().Value.ToString(), Is.EqualTo("PREAMBLE.\r\nPOSTAMBLE."));
+            Assert.That(gameWorld.Locations.Count, Is.EqualTo(1));
+            Assert.That(gameWorld.Locations.First().Value.ToString(), Is.EqualTo("PREAMBLE.\r\nPOSTAMBLE."));
+        }
+
+        [Test]
+        public void Parse_ShortFormPresent_MapsToLongDescription()
+        {
+            FileDataIs("1	Long form" + Rn +
+                       "-1" + Rn +
+                       "1	Short form" + Rn +
+                       "-1" + Rn +
+                       "1	2	2	44	29");
+
+            var gameWorld = _parser.Parse(AdvenDat);
+
+            Assert.That(gameWorld.Locations.First().Value.ShortForm, Is.EqualTo("Short form"));
         }
 
         private void FileDataIs(string contents)
