@@ -21,22 +21,14 @@ namespace ConsoleApplication1.GameModel
         {
             var current = Locations[CurrentLocation];
             var validMoves = current.Actions;
-            var validAction = validMoves.Where(x => x.Triggers.Contains(input)).ToList();
+            var matchingActions = validMoves.Where(x => x.Triggers.Contains(input)).ToList();
 
-            if (!validAction.Any())
+            if (!matchingActions.Any())
             {
                 return new List<string> {"I don't understand that."};
             }
 
-            foreach (var action in validAction)
-            {
-                var result = action.Action.Invoke(this, action);
-                if (result)
-                {
-                    break;
-                }
-            }
-
+            var successfulAction = matchingActions.FirstOrDefault(x => x.Action.Invoke(this, x));
 
             return new List<string>();
         }
