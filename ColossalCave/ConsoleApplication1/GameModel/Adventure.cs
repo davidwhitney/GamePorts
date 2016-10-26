@@ -28,8 +28,15 @@ namespace ConsoleApplication1.GameModel
                 return new List<string> {"I don't understand that."};
             }
 
-            var first = validAction.First();
-            first.Action.Invoke(this, first);
+            foreach (var action in validAction)
+            {
+                var result = action.Action.Invoke(this, action);
+                if (result)
+                {
+                    break;
+                }
+            }
+
 
             return new List<string>();
         }
