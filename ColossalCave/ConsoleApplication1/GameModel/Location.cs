@@ -24,5 +24,10 @@ namespace ConsoleApplication1.GameModel
             actions(Actions);
             return this;
         }
+        
+        public TActionType GetAction<TActionType>(int i) where TActionType : Actions.Action
+        {
+            return Actions[i].Action as TActionType;
+        }
     }
 }

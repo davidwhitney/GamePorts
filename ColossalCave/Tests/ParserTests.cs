@@ -191,9 +191,9 @@ namespace Tests
 
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
+            var action = locationDescription.GetAction<NavigateAction>(0);
 
-            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<ProbabilityAction>());
-            Assert.That(((ProbabilityAction)locationDescription.Actions[0].Action).Percentage, Is.EqualTo(50));
+            Assert.That(action.Constraints[0], Is.TypeOf<PercentageConstraint>());
         }
 
         [Test]
@@ -205,8 +205,9 @@ namespace Tests
 
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
+            var action = locationDescription.GetAction<NavigateAction>(0);
 
-            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<ForbiddenToDwarfs>());
+            Assert.That(action.Constraints[0], Is.TypeOf<ForbiddenToDwarfsConstraint>());
         }
 
         [Test]
@@ -218,9 +219,9 @@ namespace Tests
 
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
-
-            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<InventoryAction>());
-            Assert.That(((InventoryAction)locationDescription.Actions[0].Action).ItemId, Is.EqualTo(110));
+            var action = locationDescription.GetAction<NavigateAction>(0);
+            
+            Assert.That(((InventoryConstraint)action.Constraints[0]).ItemId, Is.EqualTo(10));
         }
 
         [Test]
@@ -232,9 +233,25 @@ namespace Tests
 
             var gameWorld = _parser.Parse(AdvenDat);
             var locationDescription = gameWorld.Locations.First().Value;
+            var action = locationDescription.GetAction<NavigateAction>(0);
+            
+            Assert.That(((ItemOrRoomPresentConstraint)action.Constraints[0]).ItemId, Is.EqualTo(1));
+        }
 
-            Assert.That(locationDescription.Actions[0].Action, Is.TypeOf<ItemOrRoomPresentAction>());
-            Assert.That(((ItemOrRoomPresentAction)locationDescription.Actions[0].Action).ItemId, Is.EqualTo(201));
+        [TestCase("301", 0)]
+        [TestCase("401", 1)]
+        [TestCase("501", 2)]
+        public void Parse_DestinationDividedBy1000Between300And400_RemainderMustNotBeZero(string mValue, int moduloExpectation)
+        {
+            FileDataIs(FirstAndSecondSection +
+                       $"1	{mValue}000	1	2	3");
+                      //loc, dest, verb, verb, verb
+
+            var gameWorld = _parser.Parse(AdvenDat);
+            var locationDescription = gameWorld.Locations.First().Value;
+            var action = locationDescription.GetAction<NavigateAction>(0);
+
+            Assert.That(((ModuloConstraint)action.Constraints[0]).ModuloResultMustNotBeEqualTo, Is.EqualTo(moduloExpectation));
         }
 
         private void FileDataIs(string contents)

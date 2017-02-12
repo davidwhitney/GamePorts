@@ -1,6 +1,6 @@
 namespace ConsoleApplication1.GameModel.Actions
 {
-    public class InventoryAction : NavigateAction
+    public class InventoryConstraint : IActionConstraint
     {
         public int ItemId { get; set; }
     }

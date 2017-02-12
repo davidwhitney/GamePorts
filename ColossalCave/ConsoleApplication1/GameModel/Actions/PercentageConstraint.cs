@@ -1,6 +1,6 @@
 namespace ConsoleApplication1.GameModel.Actions
 {
-    public class ProbabilityAction : NavigateAction
+    public class PercentageConstraint : IActionConstraint
     {
         public int Percentage { get; set; }
     }

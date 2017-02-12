@@ -80,33 +80,38 @@ namespace ConsoleApplication1.Parsing
 
         private static Action ConstrainMovementOptions(int motionConditions)
         {
-            Action action = null;
             if (motionConditions == 0)
             {
-                action = new NavigateAction();
+                return new NavigateAction();
             }
 
+            var action = new NavigateAction();
             if (motionConditions > 0
                 && motionConditions < 100)
             {
-                action = new ProbabilityAction {Percentage = motionConditions};
+                action.Constraints.Add(new PercentageConstraint {Percentage = motionConditions});
             }
 
             if (motionConditions == 100)
             {
-                action = new ForbiddenToDwarfs();
+                action.Constraints.Add(new ForbiddenToDwarfsConstraint());
             }
 
             if (motionConditions > 100
                 && motionConditions < 200)
             {
-                action = new InventoryAction {ItemId = motionConditions};
+                action.Constraints.Add(new InventoryConstraint {ItemId = motionConditions - 100});
             }
 
             if (motionConditions > 200
                 && motionConditions < 300)
             {
-                action = new ItemOrRoomPresentAction {ItemId = motionConditions};
+                action.Constraints.Add(new ItemOrRoomPresentConstraint {ItemId = motionConditions - 200});
+            }
+
+            if (motionConditions > 300)
+            {
+                action.Constraints.Add(new ModuloConstraint {ModuloResultMustNotBeEqualTo = motionConditions/100 - 3});
             }
             return action;
         }
