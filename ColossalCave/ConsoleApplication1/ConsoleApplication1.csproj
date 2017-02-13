@@ -58,8 +58,9 @@
     <Compile Include="GameModel\Actions\NavigateAction.cs" />
     <Compile Include="GameModel\Actions\ItemOrRoomPresentConstraint.cs" />
     <Compile Include="GameModel\Actions\PercentageConstraint.cs" />
+    <Compile Include="GameModel\VocabularyItem.cs" />
     <Compile Include="Parsing\ChunkerExtensions.cs" />
-    <Compile Include="GameModel\GoTo.cs" />
+    <Compile Include="GameModel\ComputedGoTo.cs" />
     <Compile Include="GameModel\Location.cs" />
     <Compile Include="GameModel\Command.cs" />
     <Compile Include="GameModel\Message.cs" />

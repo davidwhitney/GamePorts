@@ -22,7 +22,7 @@ namespace Tests
                         1, new Location(1).WithActions(a => a.Add(new Command
                         {
                             TargetId = 2,
-                            Triggers = new List<string> {"Move"},
+                            Triggers = new List<Trigger> { new Trigger {Word =  "Move"} },
                             Action = new NavigateAction()
                         }))
                     },
@@ -30,7 +30,7 @@ namespace Tests
                         2, new Location(2).WithActions(a => a.Add(new Command
                         {
                             TargetId = 1,
-                            Triggers = new List<string> {"Back"},
+                            Triggers = new List<Trigger> { new Trigger {Word =  "Back"} },
                             Action = new NavigateAction()
                         }))
                     },
@@ -74,13 +74,13 @@ namespace Tests
                 new Command
                 {
                     TargetId = 2,
-                    Triggers = new List<string> {"Move"},
+                    Triggers = new List<Trigger> { new Trigger {Word =  "Move"} },
                     Action = new ActionThatFails()
                 },
                 new Command
                 {
                     TargetId = 3,
-                    Triggers = new List<string> {"Move"},
+                    Triggers = new List<Trigger> { new Trigger {Word =  "Move"} },
                     Action = new NavigateAction()
                 }
             };

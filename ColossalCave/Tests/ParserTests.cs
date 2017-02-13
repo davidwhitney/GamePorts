@@ -78,7 +78,7 @@ namespace Tests
             var gameWorld = _parser.Parse(AdvenDat);
 
             Assert.That(gameWorld.Locations.Count, Is.EqualTo(1));
-            Assert.That(gameWorld.Locations.First().Value.ToString(), Is.EqualTo("YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK BUILDING."));
+            Assert.That(gameWorld.Locations.First().Value.Description, Is.EqualTo("YOU ARE STANDING AT THE END OF A ROAD BEFORE A SMALL BRICK BUILDING."));
         }
 
         [Test]
@@ -94,7 +94,7 @@ namespace Tests
             var gameWorld = _parser.Parse(AdvenDat);
 
             Assert.That(gameWorld.Locations.Count, Is.EqualTo(1));
-            Assert.That(gameWorld.Locations.First().Value.ToString(), Is.EqualTo("PREAMBLE.\r\nPOSTAMBLE."));
+            Assert.That(gameWorld.Locations.First().Value.Description, Is.EqualTo("PREAMBLE.\r\nPOSTAMBLE."));
         }
 
         [Test]
@@ -121,9 +121,9 @@ namespace Tests
             var locationDescription = gameWorld.Locations.First().Value;
 
             Assert.That(locationDescription.Actions[0].TargetId, Is.EqualTo(2));
-            Assert.That(locationDescription.Actions[0].Triggers[0], Is.EqualTo("1"));
-            Assert.That(locationDescription.Actions[0].Triggers[1], Is.EqualTo("2"));
-            Assert.That(locationDescription.Actions[0].Triggers[2], Is.EqualTo("3"));
+            Assert.That(locationDescription.Actions[0].Triggers[0].Id, Is.EqualTo(1));
+            Assert.That(locationDescription.Actions[0].Triggers[1].Id, Is.EqualTo(2));
+            Assert.That(locationDescription.Actions[0].Triggers[2].Id, Is.EqualTo(3));
         }
 
         [TestCase(1)]
@@ -152,7 +152,7 @@ namespace Tests
             var locationDescription = gameWorld.Locations.First().Value;
 
             Assert.That(locationDescription.Actions[0].TargetId, Is.EqualTo(1));
-            Assert.That(locationDescription.Actions[0], Is.TypeOf<GoTo>());
+            Assert.That(locationDescription.Actions[0], Is.TypeOf<ComputedGoTo>());
         }
 
         [Test]

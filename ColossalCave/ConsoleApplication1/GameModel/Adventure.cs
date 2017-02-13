@@ -12,6 +12,7 @@ namespace ConsoleApplication1.GameModel
         public string CurrentLocationText => Locations[CurrentLocation].ToString();
 
         public List<int> InventoryItems { get; set; }
+        public List<VocabularyItem> Vocabulary { get; set; } = new List<VocabularyItem>();
 
         public Adventure StartGame()
         {
@@ -23,7 +24,7 @@ namespace ConsoleApplication1.GameModel
         {
             var current = Locations[CurrentLocation];
             var validMoves = current.Actions;
-            var matchingActions = validMoves.Where(x => x.Triggers.Contains(input)).ToList();
+            var matchingActions = validMoves.Where(x => x.Triggers.Any(t=>t.Word == input)).ToList();
 
             if (!matchingActions.Any())
             {

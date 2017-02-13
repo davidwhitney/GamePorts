@@ -9,10 +9,10 @@ namespace ConsoleApplication1
         {
             var parser = new Parsing.Parser(new FileSystem());
             var adventure = parser.Parse(@"C:\dev\GamePorts\ColossalCave\ConsoleApplication1\adven.dat").StartGame();
+            Console.WriteLine(adventure.CurrentLocationText);
 
             while (true)
             {
-                Console.WriteLine(adventure.CurrentLocationText);
 
                 var input = Console.ReadLine().Trim();
 

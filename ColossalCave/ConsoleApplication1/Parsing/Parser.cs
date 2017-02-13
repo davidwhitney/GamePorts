@@ -43,7 +43,8 @@ namespace ConsoleApplication1.Parsing
 
                 if (shortForms.ContainsKey(key))
                 {
-                    adventure.Locations[key].ShortForm = shortForms[key].ToString();
+                    var shortForm = string.Join(Environment.NewLine, shortForms[key]);
+                    adventure.Locations[key].ShortForm = shortForm;
                 }
             }
 
@@ -54,30 +55,63 @@ namespace ConsoleApplication1.Parsing
 
         private static void BuildLocationMap(ICollection<List<string>> chunks, Adventure adventure)
         {
+            var vocabulary = chunks.Count > 3 ? chunks.Skip(3).First() : new List<string>();
+            foreach (var line in vocabulary)
+            {
+                var parts = line.Split('\t');
+                var n = int.Parse(parts[0]);
+                var m = n / 1000;
+
+                var vocab = new VocabularyItem
+                {
+                    Word = parts[1],
+                    IsMotion = m == 0,
+                    IsObject = m == 1,
+                    IsAction = m == 2,
+                    IsSpecial = m == 3,
+                    SpecialIndex = n % 1000,
+                    IsTreasure = m == 1 && n % 1000 >= 50 && n % 1000 <= 79
+                };
+
+                adventure.Vocabulary.Add(vocab);
+            }
+
             var locationMap = chunks.Count > 2 ? chunks.Skip(2).First() : new List<string>();
             foreach (var line in locationMap)
             {
-                var pathData = new Queue<int>(line.Split('\t').Select(int.Parse));
+                var rawData = line.Split('\t').Select(int.Parse).ToList();
+                var pathData = new Queue<int>(rawData);
+
                 var thisLocation = adventure.Locations[pathData.Dequeue()];
 
                 var secondValue = pathData.Count > 0 ? pathData.Dequeue() : thisLocation.Id;
                 var targetId = secondValue%1000;
                 var motionConditions = secondValue / 1000;
 
-                var pathRecord = CreateCommand(targetId, secondValue);
-                var constraint = ConstrainMovementOptions(motionConditions);
-
-                pathRecord.Action = constraint;
+                var command = CreateCommand(targetId, secondValue);
+                command.Action = ConstrainMovementOptions(motionConditions);
 
                 while (pathData.Any())
                 {
-                    pathRecord.Triggers.Add(pathData.Dequeue().ToString());
+                    var item = pathData.Dequeue();
+                    var word = adventure.Vocabulary.Count > item ? adventure.Vocabulary[item].Word : null;
+                    var vocab = adventure.Vocabulary.Count > item ? adventure.Vocabulary[item] : null;
+                    var trigger = new Trigger {Id = item, Word = word, VocabularyRef = vocab };
+                    command.Triggers.Add(trigger);
                 }
 
-                thisLocation.Actions.Add(pathRecord);
+                thisLocation.Actions.Add(command);
+            }
+
+            foreach (var location in adventure.Locations)
+            {
+                foreach (var action in location.Value.Actions)
+                {
+                    action.TargetRef = adventure.Locations.Keys.Contains(action.TargetId) ? adventure.Locations[action.TargetId] : null;
+                }
             }
         }
-
+        
         private static Action ConstrainMovementOptions(int motionConditions)
         {
             if (motionConditions == 0)
@@ -121,7 +155,7 @@ namespace ConsoleApplication1.Parsing
             Command pathRecord;
             if (targetId > 300 && targetId <= 500)
             {
-                pathRecord = new GoTo {TargetId = secondValue - 300};
+                pathRecord = new ComputedGoTo {TargetId = secondValue - 300};
             }
             else if (targetId > 500)
             {
